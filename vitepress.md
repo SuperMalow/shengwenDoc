@@ -1,10 +1,10 @@
 ---
 outline: depp
 prev: 
-    text: '上一页'
+    text: 'typescript笔记'
     link: /typescriptNote.html
 next:
-    text: '下一页'
+    text: 'Electron开发环境的集成'
     link: /Electron开发环境的集成.html
 ---
 

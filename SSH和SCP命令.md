@@ -1,11 +1,11 @@
 ---
 outline: depp
 prev: 
-    text: '上一页'
+    text: 'Git'
     link: /Git.html
 next:
-    text: '下一页'
-    link: typescriptNote.html
+    text: 'typescript笔记'
+    link: /typescriptNote.html
 ---
 
 

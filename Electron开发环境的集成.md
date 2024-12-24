@@ -1,7 +1,7 @@
 ---
 outline: depp
 prev: 
-    text: '上一页'
+    text: 'vitepress笔记'
     link: /vitepress.html
 
 ---

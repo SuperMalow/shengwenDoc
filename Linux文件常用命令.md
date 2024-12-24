@@ -1,7 +1,7 @@
 ---
 outline: depp
 next:
-    text: '下一页'
+    text: 'Tmux和Vim'
     link: /Tmux和Vim.html
 ---
 

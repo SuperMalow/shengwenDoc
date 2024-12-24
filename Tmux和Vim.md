@@ -1,10 +1,10 @@
 ---
 outline: depp
 prev: 
-    text: '上一页'
+    text: 'Linux文件常用命令'
     link: /Linux文件常用命令.html
 next:
-    text: '下一页'
+    text: 'Git'
     link: /Git.html
 ---
 

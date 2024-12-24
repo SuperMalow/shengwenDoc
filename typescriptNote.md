@@ -1,10 +1,10 @@
 ---
 outline: depp
 prev: 
-    text: '上一页'
+    text: 'SSH和SCP命令'
     link: /SSH和SCP命令.html
 next:
-    text: '下一页'
+    text: 'vitepress笔记'
     link: /vitepress.html
 ---
 
