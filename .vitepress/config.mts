@@ -5,6 +5,7 @@ export default defineConfig({
   title: "shengwen documents",
   description: "belong to shengwen's documents website",
   outDir: 'docs', // 打包输出的目录
+  base: '/shengwenDoc/', // 部署到github pages的路径，也就是你的仓库名称
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
