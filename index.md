@@ -3,23 +3,38 @@
 layout: home
 
 hero:
-  name: "shengwen documents"
-  text: "belong to shengwen's documents website"
-  tagline: My great project tagline
+  name: "聖文"
+  text: ""
+  tagline: "成功不必在我，但功力必不唐捐"
   actions:
     - theme: brand
-      text: Markdown Examples
-      link: /markdown-examples
+      text: TypeScriptNote
+      link: /typescriptNote
     - theme: alt
-      text: API Examples
-      link: /api-examples
+      text: Linux
+      link: /Linux文件常用命令
 
 features:
-  - title: Feature A
+  - title: Linux常用命令
     details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature B
+    link: /Linux文件常用命令
+  - title: Tmux和Vim的使用技巧
     details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
-  - title: Feature C
+    link: /Tmux和Vim
+  - title: Git常用命令
     details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+    link: /Git
+  - title: SSH和SCP的使用
+    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+    link: /SSH和SCP命令
+  - title: TypeScript学习笔记
+    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+    link: /typescriptNote
+  - title: Vitepress部署笔记
+    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+    link: /vitepress
+  - title: Electron的环境集成
+    details: Lorem ipsum dolor sit amet, consectetur adipiscing elit
+    link: /Electron开发环境的集成
 ---
 
