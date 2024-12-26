@@ -6,13 +6,14 @@ export default defineConfig({
   description: "聖文的档案室",
   outDir: 'docs', // 打包输出的目录
   base: '/shengwenDoc/', // 部署到github pages的路径，也就是你的仓库名称
+  lang: 'zh',
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: '首页', link: '/' },
       { text: '文档', link: '/Linux文件常用命令.html' }
     ],
-    logo: './logo.jpg',
+    logo: './public/logo.jpg',
     sidebar: [
       {
         text: '文档',
