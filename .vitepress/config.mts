@@ -28,6 +28,10 @@ export default defineConfig({
       }
     ],
 
+    footer: {
+      copyright: "Copyright © 2024-present SuperMalow and Shengwen"
+    },
+
     docFooter: {
       prev: '上一页',
       next: '下一页',
