@@ -9,7 +9,7 @@ next:
 ---
 
 
-# vitepress
+# vitepress 部署笔记
 
 vitepress \ rspress
 静态站点生成器 ssg 技术 static site generator

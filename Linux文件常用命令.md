@@ -5,6 +5,8 @@ next:
     link: /Tmux和Vim.html
 ---
 
+# Linux常用命令
+
 ## 文件常用命令
 
 1. `ctrl c`: 取消命令，并且换行

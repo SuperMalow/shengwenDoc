@@ -10,7 +10,7 @@ next:
 
 
 
-# Typescript Note
+# Typescript 学习笔记
 
 ## 环境搭建
 
