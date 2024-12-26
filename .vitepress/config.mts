@@ -13,7 +13,7 @@ export default defineConfig({
       { text: '首页', link: '/' },
       { text: '文档', link: '/Linux文件常用命令.html' }
     ],
-    logo: './public/logo.jpg',
+    logo: '/public/logo.jpg',
     sidebar: [
       {
         text: '文档',
