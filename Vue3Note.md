@@ -1,3 +1,13 @@
+---
+outline: depp
+prev:
+    text: 'Electron开发环境的集成'
+    link: /Electron开发环境的集成.html
+next:
+    text: 'Linux文件常用命令'
+    link: /Linux文件常用命令.html
+---
+
 # Vue3 笔记
 
 ## 简单介绍

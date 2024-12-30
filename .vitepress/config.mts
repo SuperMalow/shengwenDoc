@@ -25,6 +25,7 @@ export default defineConfig({
           { text: 'TypeScript学习笔记', link: '/typescriptNote' },
           { text: 'Vitepress部署笔记', link: '/vitepress' },
           { text: 'Electron的环境集成', link: '/Electron开发环境的集成' },
+          { text: 'Vue3笔记', link: '/Vue3Note' },
         ]
       }
     ],
