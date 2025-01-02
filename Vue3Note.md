@@ -10,7 +10,7 @@ next:
 
 # Vue3 笔记
 
-## 简单介绍
+## 0. 简单介绍
 
 主要为构建**用户界面**的框架。
 
@@ -19,19 +19,19 @@ next:
 - ViewModel：业务逻辑 js 代码
 - Model：数据层（存储数据及对数据的处理如增删改查）
 
-## Vue3 与 Vue2 的区别
+### 0.1 Vue3 与 Vue2 的区别
 
 Vue2： Option API 写法
 Vue3： Composition API 写法
 
-## 环境搭建
+## 1. 环境搭建
 
-### 安装 node.js
+### 1.1 安装 node.js
 
 - 安装 node.js：自行百度（安装完成后会拥有 npm 命令）
 - 也可以安装另一个 nvm 命令来进行管理 node 版本，`nvm -help` 查看帮助
 
-### Vite 构建项目
+### 1.2 Vite 构建项目
 
 1. 安装 vite
 
@@ -53,7 +53,7 @@ npm install
 npm run dev
 ```
 
-### Vue-CLI 构建项目
+### 1.3 Vue-CLI 构建项目
 
 1. 安装 vue-cli
 
@@ -73,7 +73,7 @@ npm install
 npm run serve
 ```
 
-## Vue 项目结构
+## 2. Vue 项目结构
 
 1. src：源码目录
 2. public：静态资源目录
@@ -84,7 +84,7 @@ npm run serve
 7. vite.config.ts：vite配置文件
 8. index.html：入口文件
 
-### SFC 语法规范
+### 2.1 SFC 语法规范
 
 所有的vue文件都由三个类型的语法块进行组成：
 
@@ -95,16 +95,16 @@ npm run serve
 3. style：样式，用于定义页面的样式
     - 可以包含多个样式块
 
-### 项目启动的过程
+### 2.2 项目启动的过程
 
 当执行`npm run dev`命令时，会在项目的目录内进行查找`package.json`文件，然后执行`vite`命令，接下来就会去`node_modules/vite`目录下进行查找其`package.json`文件，然后执行`bin/vite.js`文件。发现其是一个软链接，最后在
 `node_modules/.bin`目录下查找`vite`命令，然后执行`vite`这个命令。
 
 即，通常会在本项目中进行查找该命令，如果没有则往上`冒泡`去寻找命令，最后在环境变量中去寻找。
 
-## Vue3 模版语法 与 Vue 指令
+## 3. Vue3 模版语法 与 Vue 指令
 
-### 模版语法
+### 3.1 模版语法
 
 通常vue3采用以下的书写风格：
 ```vue
@@ -120,7 +120,7 @@ const title:string = "hello world!";
 </script>
 ```
 
-### Vue指令
+### 3.2 Vue指令
 
 在Vue中，所有以v-开头的指令都是Vue内置的指令
     
@@ -140,13 +140,13 @@ const title:string = "hello world!";
 
 
 
-## Vue 虚拟 Dom 和 Diff 算法 
+## 4. Vue 虚拟 Dom 和 Diff 算法 
 
-### 虚拟 Dom
+### 4.1 虚拟 Dom
 虚拟 Dom 就是 JS 将真实的 Dom 转化为一个抽象的数据结构节点树。
 至于为什么要有虚拟 dom 而不是使用真实的dom，这是因为真实的dom，其包含的东西有很多，但其实我们在意的只有那几个属性，而且还能节省掉很多的性能消耗。
 
-### Diff 算法
+### 4.2 Diff 算法
 
 Diff 算法的核心思想是通过比较两棵树的不同，找出最小的操作集合，使得两棵树的结构保持一致。
 
@@ -154,9 +154,9 @@ Diff 算法的核心思想是通过比较两棵树的不同，找出最小的操
 
 当数据发生变化时，vue会重新渲染整个组件，这时会触发diff算法，找出最小的操作集合，使得组件的结构保持一致。如果v-for此时不搭配:key来使用，当操作v-for遍历的数组时，可能会导致上一次渲染与下一次渲染的结果不一致。
 
-## Ref 全家桶
+## 5. Ref 全家桶
 
-### ref
+### 5.1 ref
 
 导入: `import { ref } from 'vue'`
 使用: `const num = ref(1)`
@@ -165,61 +165,103 @@ ref可以接受一个值并返回一个响应式的对象。这个对象仅有�
 
 在TS中，这么定义Ref接口: `interface Ref<T> {value: T}`
 
+**另外ref可以获取 dom 元素**
+```vue
+<template>
+  <dvi ref="myDiv">hello world</div>
+</template>
 
-### isRef
+<script lang="ts" setup>
+const myDiv = ref<HTMLDivElement | null>(null);
+console.log(myDiv.value?.innerText); // hello world
+</script>
+```
 
-作用: 判断一个值是否是ref对象
+### 5.2 isRef
 
-
-### shallowRef
-
-作用: ......
-
-
-### triggerRef
-
-作用: 强制更新页面Dom
-
-### customRef
-
-作用: .......
+作用: 判断一个值是否是ref对象。不常用
 
 
-## Reactive 全家桶
+### 5.3 shallowRef （不常用）
 
-### reactive
+作用: 可以做浅层次的响应式，会将数据进行改变，但是不会进行渲染，同时也不能跟ref一起混用，这样ref会导致渲染而导致shallowref同样被渲染出最新修改的值（这是因为ref会进行调用triggerRef,而这个函数同样会将shallowRef进行刷新重新渲染）。也不常用。
 
-作用: 用来绑定复杂的数据结构，对象、数组等
 
-另外如果使用 ref 定义数组和对象，在 vue 源码中也是去调用 reactive 的。
+### 5.4triggerRef （不常用）
+
+作用: 强制更新页面Dom。当使用shallowRef的时候，会进行浅层的响应式，但是搭配这个函数可以强制更新。也不常用。
+
+### 5.5 customRef （不常用）
+
+作用: 自定义响应式变量。通常为vue源码内使用的函数。也不常用。
+
+
+## 6. Reactive 全家桶
+
+### 6.1 reactive
+
+作用: 用来绑定复杂的数据结构，对象、数组等（引用类型 Array Object Map Set）
+
+另外如果使用 ref 定义数组和对象，**在 vue 源码中也是去创建 reactive 的**。
 
 使用 reactive 过程中，在修改其值的时候，无须使用 .value 进行操作，直接修改即可。
 
-数组异步赋值的情况下，会导致 reactive 脱离响应式变量。通常使用push、unshift、splice、sort、reverse等方法进行修改数组。这样不会对该遍历进行脱离响应式。
+数组异步赋值的情况下，会导致 reactive 脱离响应式变量(直接赋值会将原本的对象进行覆盖，导致不能变为响应式)。通常使用push、unshift、splice、sort、reverse等方法进行修改数组。这样不会对该遍历进行脱离响应式。
 
-### readonly
+**reactive可以直接定义一个对象，然后将对象的每一个属性进行对标签内进行双向绑定（这样就不用一个项定义一个ref变量去绑定了）**
+```vue
+<template>
+  <div>
+    <input type="text" v-model="obj.name" /> 
+    <input type="text" v-model="obj.age" />
+    <!-- 避免默认页面刷新 故需要阻止其默认的行为 -->
+    <button @click.prevent="submit"> submit </button> 
+  </div>
+</template>
+
+<script lang="ts" setup>
+const fromData = reactive({
+  name: '张三',
+  age: 20,
+})
+const submit = () => {
+  console.log(fromData);
+}
+</script>
+```
+
+
+### 6.2 readonly
 
 作用: 用来将响应式对象设置为只读模式，使其不可修改。
 
-### shallowReactive
+### 6.3 shallowReactive （不常用）
 
-作用: ......
+作用: 同理ref中的shallowRef。也不常用。
 
 
-## to 系列全家桶
+## 7. to 系列全家桶
 
-### toRef
+### 7.1 toRef （不常用）
 
-### toRefs
+toRef功能有点鸡肋....我都用reactive这个响应式了，我还需要使用toRef去将对象内的属性转响应式干嘛？
+奥，懂了，这个函数主要是为了下面那个函数toRefs服务的。不常用。
 
-### toRaw
+### 7.2 toRefs 
 
-## computed 计算属性
+将reactive对象内的属性进行解构成多个ref响应式变量。可能不常用。
 
-computed 计算属性，当前值发生变化的时候，会触发更改。
+### 7.3 toRaw 
+
+将响应式对象解构成普通的对象。不常用。
+
+## 8. computed 计算属性
+                            
+computed 计算属性，当前值发生变化的时候，会触发更改。另外使用computed是只读变量，无法进行修改。(当然写法是函数式写法)
+
+**在源码中，发现如果是函数式写法，则将变量设置为只读的。当然computed内其值不变的话，其返回的值是上一次缓存的，即值不变也不会重新进行计算，而是返回上一次计算的。**
 
 使用：
-
 ```typescript
 const count = ref(0);
 const total = ref(0);
@@ -232,30 +274,57 @@ let price = computed<number>(() => {
 })
 ```
 
-## watch 侦听器
+## 9. watch 侦听器
 
 作用： 监听某个变量，当变量发生变化的时候会触发设置的回调函数。
 
 使用：
-
 ```typescript
 const count = ref(0);
 const price = ref(0);
+// 方法1
 watch(count, (newVal, oldVal) => {
     console.log(`count 值发生变化了，新值为 ${newVal}, 旧值为 ${oldVal}`);
 });
+// 如果方法1不管用，则采用这样的方式去监听
+// 通常这样的方法去监听对象内的某个属性值
 watch(() => price.value, (newVal, oldVal) => {
     console.log(`price 值发生变化了，新值为 ${newVal}, 旧值为 ${oldVal}`);
 })
 ```
 
-## watchEffect 侦听器
+另外，如果想额外第一次也要走监听函数，可以在其后面跟上`{immediate: true}`会立即执行一次。
+
+另外需要停止监听值的话可以采用以下的方式去进行停止监听：（调用一次watch或者接下来要讲解的watchEffect其返回的函数即可。）
+```js
+const stop = watch(count, (newVal, oldVal) => {
+    console.log(`count 值发生变化了，新值为 ${newVal}, 旧值为 ${oldVal}`);
+});
+// 停止监听
+stop();
+```
+
+## 10. watchEffect 侦听器
 
 个人感觉不太常用...等用到在仔细研究。
 
-作用：首先立即执行传入的函数一次，然后响应式跟踪其依赖，并在其依赖变更时重新运行该函数。
-
-使用: 。。。。
+在进行监听多个变量的时候，可以通过[]放在watch里面去进行监听。那么在watchEffect中，直接可以采用以下的方式进行：
+另外，watchEffect跟watch的区别就是，会先执行一次该函数，也就是watch自带的immediate选项。
+```typescript
+let message = ref('hello');
+let count = ref(0);
+const stopWatch = watchEffect((oninvalidate) => {
+  // 其中message与count无论哪一个发生变化，都会触发该函数
+  console.log('message', message.value)
+  console.log('count', count.value)
+  // 在执行这watchEffect的时候会先调用这个函数一次
+  oninvalidate(() => {
+    console.log("before")
+  })
+})
+// 同watch一样，可以停止监听
+// stopWatch();
+```
 
 ## Vue3 生命周期
 
