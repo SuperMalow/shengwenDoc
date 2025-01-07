@@ -326,7 +326,7 @@ const stopWatch = watchEffect((oninvalidate) => {
 // stopWatch();
 ```
 
-## Vue3 生命周期
+## 11.Vue3 生命周期
 
 组件的生命周期，主要的：
 
@@ -343,17 +343,22 @@ const stopWatch = watchEffect((oninvalidate) => {
 6. unmounted：组件实例已从DOM中移除，组件实例的所有指令都被解除绑定，所有事件侦听器都被移除，所有子组件实例被卸载。
 
 
-## less、sass、scoped
+## 12.less、sass、scoped
 
+### less 不太推荐
 Less（Leaner Style Sheets）是一个CSS预处理语言，它扩展了CSS语言，增加了变量、Mixin、函数等特性，使CSS更加强大和动态。
 
+### Sass 不太推荐
 Sass（Syntactically Awesome StyleSheets）是一种CSS扩展语言，它使用了缩进和分号来区分代码块，并增加了一些编程特性，如条件语句、循环语句、函数等。
 [Sass 官方文档](https://less.bootcss.com/#%E6%A6%82%E8%A7%88)
 
 sass 跟 less 一样都是 css 预处理器
 [sass 官方文档](https://www.sass.hk/docs/)
 
-### 在 vite 中使用 less
+### Scoped 推荐
+Scoped 是 Vue 推荐的 CSS 作用域解决方案，它通过在 style 标签上添加 scoped 属性，让 CSS 只作用于当前组件，不会影响全局样式。加上 scoped 属性后，CSS 选择器中的 class 名都会自动添加一个唯一的标识符，从而避免了样式冲突。
+
+#### 在 vite 中使用 less
 
 安装 less：`npm install less -D`
 
@@ -363,7 +368,7 @@ sass 跟 less 一样都是 css 预处理器
 </style>
 ```
 
-### 在 vite 中使用 sass
+#### 在 vite 中使用 sass
 
 安装 sass：`npm install sass -D`
 
@@ -376,7 +381,7 @@ sass 跟 less 一样都是 css 预处理器
 scoped 作用：只对当前组件有效，不会影响全局样式。即 Vue 中对每个文件都hash出一个唯一值，然后添加到 style 标签的 class 属性中，这样可以保证样式的隔离。
 
 
-## Vue 父子组件传参
+## 13. Vue 父子组件传参
 
 ### 父组件参数传给子组件
 
@@ -508,6 +513,8 @@ const hi = () => {
 }
 </script>
 ```
+
+
 
 
 
