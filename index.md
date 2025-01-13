@@ -39,5 +39,11 @@ features:
   - title: Vue3 笔记
     details: 记录学习 Vue3 的过程
     link: /Vue3Note
+  - title: Pinia 笔记
+    details: 记录学习 Pinia 的过程
+    link: /PiniaNote
+  - title: Nextjs 笔记
+    details: 记录学习 Nextjs 的过程
+    link: /NextJsNote
 ---
 
