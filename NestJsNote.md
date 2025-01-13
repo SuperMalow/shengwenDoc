@@ -1,8 +1,8 @@
 ---
 outline: depp
 prev:
-  text: "Vue3笔记"
-  link: /Vue3Note.html
+  text: "Pinia笔记"
+  link: /PiniaNote.html
 next:
   text: "Linux文件常用命令"
   link: /Linux文件常用命令.html

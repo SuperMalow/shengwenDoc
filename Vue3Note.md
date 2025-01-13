@@ -4,8 +4,8 @@ prev:
   text: "Electron开发环境的集成"
   link: /Electron开发环境的集成.html
 next:
-  text: "NestJs笔记"
-  link: /NestJs.html
+  text: "Pinia笔记"
+  link: /PiniaNote.html
 ---
 
 # Vue3 笔记
