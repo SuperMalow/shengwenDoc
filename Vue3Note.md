@@ -4,8 +4,8 @@ prev:
   text: "Electron开发环境的集成"
   link: /Electron开发环境的集成.html
 next:
-  text: "Linux文件常用命令"
-  link: /Linux文件常用命令.html
+  text: "NestJs笔记"
+  link: /NestJs.html
 ---
 
 # Vue3 笔记
@@ -630,7 +630,6 @@ import Child from "./Child.vue";
 
 在进行异步组件的引入时，需要使用 defineAsyncComponent 方法。另外在进行展示异步组件的时，需要使用 suspense 组件。
 
-
 ```Vue
 <template>
   <Suspense>
@@ -673,19 +672,20 @@ Teleport 组件，是 Vue 3 新增的一种组件，可以实现组件的移动�
 2. 退出组件后 ==> 触发 onDeactivated
 3. 再次进入 ==> 触发 onActivated
 
-注：该组件无法通过使用v-show来控制组件的显示与隐藏，因为该组件为一个抽象组件，并不真实存在于 DOM 树中。
+注：该组件无法通过使用 v-show 来控制组件的显示与隐藏，因为该组件为一个抽象组件，并不真实存在于 DOM 树中。
 
 ## 20. transition 组件
 
 该组件可以在以下的情况下，给任何元素和组件添加 进入/离开的过渡动画：
 
-1. 使用v-if渲染条件块时
-2. 使用v-show渲染条件块时
+1. 使用 v-if 渲染条件块时
+2. 使用 v-show 渲染条件块时
 3. 动态组件切换时 component 组件
 
 该组件的作用为，在切换不同组件之间拥有一些过渡的动画效果。
 
 基本使用：
+
 ```Vue
 <template>
   <button @click="show = !show">切换</button>
@@ -715,7 +715,7 @@ const show = ref(true);
   height: 100px;
   background-color: black;
 }
-.fade-leave-from {  
+.fade-leave-from {
   width: 100px;
   height: 100px;
   background-color: black;
@@ -723,7 +723,7 @@ const show = ref(true);
 .fade-leave-active {
   transition: all 5s;
 }
-.fade-leave-to {  
+.fade-leave-to {
   width: 0;
   height: 0;
 }
@@ -738,9 +738,10 @@ const show = ref(true);
 
 使用：`import 'animate.css'` 即可
 
-···Vue
+```Vue
 <template>
-  <button @click="show = !show">切换</button>
+<button @click="show = !show">切换</button>
+
   <!-- 最新的animate.css版本4以上在使用其动画库时，需要加上前缀 animate__animated 类名 -->
   <transition enter-active-class="animate__animated animated fadeIn" leave-active-class="animate__animated animated fadeOut">
     <div v-if="show" class='box'>hello</div>
@@ -751,33 +752,322 @@ import { ref } from "vue";
 import 'animate.css'
 const show = ref(true);
 </script>
+```
 
 ### transition 生命周期 （等真正需要再去学习，知道有这个东西即可）
 
-transition 组件还内置提供了其独特的生命周期，可以支持在不同周期中使用js来计算属性等操作。
+transition 组件还内置提供了其独特的生命周期，可以支持在不同周期中使用 js 来计算属性等操作。
 
-等真正需要再去详细的学习即可，通过animated.css来进行动画效果实现，已经满足大部分场景了。
+等真正需要再去详细的学习即可，通过 animated.css 来进行动画效果实现，已经满足大部分场景了。
 
+## 21. transition-group
 
+对于 transition 组件来说，它每次只会渲染单节点，但是如何进行渲染整个列表呢？比如说使用 v-for 创建的多个节点的列表。那么就可以使用 transition-group 组件。
 
-## Vue 插件
+其使用效果与 transition 组件类似，不过是支持多列表/多节点的渲染而已。
 
-https://xiaoman.blog.csdn.net/article/details/123300264
+## 22. 依赖注入 provide / inject
 
-## UI 框架
+注意：该部分仅能在 setup 语法中进行使用。
+
+一般来说，从父组件传参传入子组件，可以使用 props，但是如果 dom 树比较深，想要将祖宗节点的参数传给子孙节点就会一层一层 props，会显得很麻烦。
+
+那么 vue3 中提供了，在祖宗节点的组件中使用 provide 进行依赖注入，然后在其子孙节点的组件中 inject 进行依赖使用。
+以下例子，可以从 A 进行 provide 注入，然后再 F 中进行 inject 依赖使用。
+
+```shell
+A -> B -> D -> G
+  -> C -> E
+       -> F
+```
+
+父组件：
+```vue
+<script setup>
+import { ref, provide, readonly} from 'vue'
+const colorVal = ref('red');
+provide('color', colorVal);
+// provide('color', readonly(colorVal)); // 如果不想让其子组件更改注入的值可以使用只读变量来进行 
+</script>
+```
+
+子组件:
+
+```vue
+<script setup>
+import { inject } from 'vue'
+const color = inject('color');
+</script>
+```
+
+当然了，如果注入的值不是响应式的，那么在子组件进行更改值时，在其父组件的 template 标签中是不会进行响应式变化的。所以，推荐使用响应式变量进行注入使用。
+
+..... 晚上回去实现一下这种方式。
+
+## 23. 兄弟组件之间的传参
+
+### 方案 1 兄弟组件可以通过其共同的父组件进行传参
+
+兄弟 A 想要使用兄弟 B 的属性或函数，可以将兄弟 A 的属性和函数 defineExpose 到父组件。然后兄弟 B 通过 props 接收父组件传过来的属性和函数。
+
+... 完善回去实现一下
+
+### 方案 2 通过全局函数或变量进行传参
+
+参见后面第 25 章。
+
+## 23. TSX （太复杂了，不推荐了解）
+
+TSX 是 TypeScript + JSX 的简写，是一种 JSX 的超集，可以将 JSX 代码和 TypeScript 代码混合在一起。
+
+## 24. v-model 的深入了解
+
+其本质就是一个语法糖，它可以将数据双向绑定到输入框和数据模型上。其原理实现即为 Vue3 中提供的 props 和 emit 来进行实现的双向绑定功能。
+
+## 25. 定义全局函数和变量
+
+在 vue3 中，通过 globalproperties 来定义全局函数和变量，可以让全局函数和变量在整个项目中都可以访问到。
+
+定义：
+
+```js
+// main.js
+const app = createApp(App);
+app.config.globalProperties.$myGlobalFunction = (str) => {
+  console.log(str);
+  return "全局函数返回值";
+};
+app.config.globalProperties.$myGlobalVariable = "全局变量";
+```
+
+使用：
+
+```vue
+<script setup>
+import { getCurrentInstance } from "vue";
+const app = getCurrentInstance();
+console.log(app.$myGlobalFunction("hahah")); // 全局函数返回值
+console.log(app.$myGlobalVariable); // 全局变量
+</script>
+```
+
+## 26. 第三方 UI 框架
 
 ### Naive UI
 
 (Naive UI)[https://www.naiveui.com/zh-CN/os-theme]
 
+安装方法:
+
+```shell
+npm install naive-ui --save
+```
+
+引入方法:
+
+```js
+// main.js
+import Naive from "naive-ui";
+import "naive-ui/lib/naive-ui.css";
+
+const app = createApp(App);
+app.use(Naive);
+```
+
 ### Element Plus
 
 (Element Plus)[https://element-plus.org/zh-CN/]
+
+安装方法:
+
+```shell
+npm install element-plus --save
+```
+
+引入方法:
+
+```js
+// main.js
+import ElementPlus from "element-plus";
+
+const app = createApp(App);
+app.use(ElementPlus);
+```
 
 ### Vant 移动端
 
 (Vant)[https://vant-contrib.gitee.io/vant/]
 
+安装方法：
+
+```shell
+npm install vant --save
+```
+
+引入方法:
+
+```js
+// main.js
+import Vant from "vant";
+
+const app = createApp(App);
+app.use(Vant);
+```
+
 ### Ant Design Vue
 
 (Ant Design Vue)[https://2x.antdv.com/docs/vue/introduce-cn/]
+
+安装方法:
+
+```shell
+npm install ant-design-vue --save
+```
+
+引入方法:
+
+```js
+// main.js
+import Antd from "ant-design-vue";
+
+const app = createApp(App);
+app.use(Antd);
+```
+
+## 27. Vue3 集成 Tailwindcss
+
+[Tailwindcss](https://www.tailwindcss.cn/)
+
+1. 安装方法：
+
+```shell
+npm install -D tailwindcss
+npx tailwindcss init
+```
+
+2. 配置模板文件路径
+   在文件 `tailwind.config.js` 中配置模板文件路径，默认路径为 `./index.html`
+
+```js
+module.exports = {
+  purge: ["./index.html", "./src/**/*.{vue,js,ts,jsx,tsx}"],
+  theme: {
+    extend: {},
+  },
+  plugins: [],
+};
+```
+
+3. 将加载 Tailwind 的指令添加到你的 CSS 文件中
+
+在 src 目录下新建一个 input.css 文件，并在其中添加以下内容：
+
+```css
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+```
+
+4. 在 main.js 中引入 3. 编写的样式文件
+
+```js
+// main.js
+import "./input.css";
+// ...
+```
+
+5. 启动项目即可进行使用 Tailwindcss 样式了。
+
+## 28. Vue3 开发移动端应用
+
+在进行开发移动端应用的时候，就需要考虑各种机型的适配情况。目前主流的方式是使用 vw 和 vh 来进行适配。
+
+在 Vue3 中，有一个很好用的三方库：postcss-px-to-viewport，可以将 px 单位转换为 vw 或 vh 单位。
+
+安装方法：
+
+```shell
+npm install postcss-px-to-viewport -D
+```
+
+由于 vite 中以及内联了 postcss 所以不需要额外的创建 postcss.config.js 文件。
+
+配置方法:
+
+```js
+// vite.config.js
+import { defineConfig } from "vite";
+import postcsspxtoviewport from "postcss-px-to-viewport";
+// https://vitejs.dev/config/
+export default defineConfig({
+  base: "./",
+  plugins: [
+    vue(),
+  ],
+  css: [
+    postcss: {
+      plugins: [
+        postcsspxtoviewport({
+          unitToConvert: "px", // 需要转换的单位，默认为"px"
+          viewportWidth: 750, // 视窗的宽度，对应设计稿的宽度，一般是750
+          unitPrecision: 6, // 转换后的精度，即小数点位数
+          propList: ["*"], // 需要转换的属性列表，默认值为["*"]，表示全部属性都进行转换
+          viewportUnit: "vw", // 转换后的单位，默认为"vw"
+          fontViewportUnit: "vw", // 字体的单位，默认为"vw"
+          selectorBlackList: ['ignore-'], // 要忽略的CSS选择器，不会转为视窗单位，使用原有的px等单位，那么使用ignore-前缀的类名就不会被转换
+          minPixelValue: 1, // 最小的转换像素值，默认1px
+          mediaQuery: true, // 媒体查询里的单位是否需要转换，默认false
+          replace: true, // 是否直接更换属性值，而不添加备用属性，默认false
+          landscape: false, // 是否针对横屏进行优化，默认false
+        })
+      ]
+    }
+  ]
+  resolve: {
+    // 配置路径别名
+    alias: {
+      "@": path.resolve(__dirname, "./src"),
+    },
+  },
+});
+
+```
+
+## 29. Vite + Proxy 解决跨域问题
+
+1. 什么是跨域问题？
+   跨域问题就是，浏览器出于同源策略的限制，不同源的网页之间无法进行通信，这是浏览器核心的安全策略。
+
+当一个请求 url 的协议、域名、端口有一个不同时，就会产生跨域问题。
+
+2. 如何解决跨域问题？
+
+使用 Vite + Proxy 代理解决跨域问题
+
+```js
+// vite.config.js
+import { defineConfig } from "vite";
+
+export default defineConfig({
+  server: {
+    proxy: {
+      '/api': {
+        target: 'http://localhost:3000',  // 跨域地址
+        changeOrigin: true, // 是否跨域
+        rewrite: (path) => path.replace(/^\/api/, '') // 重写路径,替换成/api
+      }
+    }
+  }
+});
+```
+
+完成上面的配置后，在进行请求地址的时候，不需要重新使用 `http://localhost:3000` 直接使用 `/api` 进行替代即可(其后面跟对应的地址请求即可)。
+
+## 30. Vue3 开发 IOS 和 安卓应用
+
+1. uniapp，只适合开发小程序类应用，开发原生的 APP 类应用，会存在一定的问题。
+2. react native，可以开发 IOS 和安卓应用，但是不支持 Vue3
+3. flutter，可以开发 IOS 和安卓应用，但是不支持 Vue3
+4. ionic，可以开发 IOS 和安卓应用，支持 Vue3 angular react ts 构建应用。
+
+推荐使用 ionic 进行开发 IOS 和安卓应用，等后续需要这方面的需求再进行研究开发。

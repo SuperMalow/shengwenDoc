@@ -1,12 +1,11 @@
 ---
 outline: depp
-prev: 
-    text: 'vitepress笔记'
-    link: /vitepress.html
-next: 
-    text: 'vitepress笔记'
-    link: /vitepress.html
-
+prev:
+  text: "vitepress笔记"
+  link: /vitepress.html
+next:
+  text: "vitepress笔记"
+  link: /vitepress.html
 ---
 
 # Electron 集成进 Vite + Vue3 项目
