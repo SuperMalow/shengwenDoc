@@ -7,25 +7,50 @@ export default defineConfig({
   outDir: 'docs', // 打包输出的目录
   base: '/shengwenDoc/', // 部署到github pages的路径，也就是你的仓库名称
   lang: 'zh',
+  head: [
+    ['link', {rel: 'icon', type:'image/jpeg', sizes: '32x32', href: '/shengwenDoc/logo.jpg'}],
+    ['link', {rel: 'apple-touch-icon', type:'image/jpeg', sizes: '180x180', href: '/shengwenDoc/logo.jpg'}]
+  ],
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
     nav: [
       { text: '首页', link: '/' },
-      { text: '文档', link: '/Linux文件常用命令.html' }
+      { text: '文档', link: '/linux/Linux文件常用命令.html' }
     ],
     logo: '/logo.jpg',
     sidebar: [
       {
-        text: '文档',
+        text: 'Linux',
+        collapsed: true,
         items: [
-          { text: 'Linux常用命令', link: '/Linux文件常用命令' },
-          { text: 'Tmux和Vim的使用技巧', link: '/Tmux和Vim' },
-          { text: 'Git常用命令', link: '/Git' },
-          { text: 'SSH和SCP的使用', link: '/SSH和SCP命令' },
-          { text: 'TypeScript学习笔记', link: '/typescriptNote' },
-          { text: 'Vitepress部署笔记', link: '/vitepress' },
-          { text: 'Electron的环境集成', link: '/Electron开发环境的集成' },
-          { text: 'Vue3笔记', link: '/Vue3Note' },
+          {text: "常用命令", link: '/linux/Linux文件常用命令.html'},
+          {text: "SSH和SCP", link: '/linux/SSH和SCP命令.html'},
+          {text: "Tmux和Vim", link: '/linux/Tmux和Vim.html'}
+        ]
+      }, {
+        text: "Frontend",
+        collapsed: true,
+        items: [
+          {text: "Typescript", link: '/frontend/TypescriptNote.html'},
+          {text: "Vue3", link: '/frontend/Vue3Note.html'},
+          {text: "Pinia", link: '/frontend/PiniaNote.html'},
+          {text: "Electron", link: '/frontend/ElectronNote.html'},
+        ]
+      },
+      {
+        text: "Backend", 
+        collapsed: true,
+        items: [
+          {text: "Js", link: '/backend/JsNote.html'},
+          {text: "NestJs", link: '/backend/NestJsNote.html'},
+        ]
+      },
+      {
+        text: "Tools", 
+        collapsed: true,
+        items: [
+          {text: "Git", link: '/tools/GitNote.html'},
+          {text: "Vitepress", link: '/tools/VitepressNote.html'},
         ]
       }
     ],
