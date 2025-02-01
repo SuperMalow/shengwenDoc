@@ -6,6 +6,7 @@ export default defineConfig({
   description: "聖文的档案室",
   outDir: 'docs', // 打包输出的目录
   base: '/shengwenDoc/', // 部署到github pages的路径，也就是你的仓库名称
+  ignoreDeadLinks: true, // 忽略死链接
   lang: 'zh',
   head: [
     ['link', {rel: 'icon', type:'image/jpeg', sizes: '32x32', href: '/shengwenDoc/logo.jpg'}],
@@ -35,6 +36,7 @@ export default defineConfig({
           {text: "Vue3", link: '/frontend/Vue3Note.html'},
           {text: "Pinia", link: '/frontend/PiniaNote.html'},
           {text: "Electron", link: '/frontend/ElectronNote.html'},
+          {text: "VueRouter4", link: '/frontend/VueRouter.html'}
         ]
       },
       {
