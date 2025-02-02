@@ -434,3 +434,354 @@ export default router;
 }
 </style>
 ```
+
+## 7. 路由的别名和重定向
+
+**路由重定向**
+
+当我们访问 `/` 路径时，我们希望它自动跳转到 `/login` 路径。
+
+```typescript
+import { createRouter, createWebHistory } from "vue-router";
+
+import type { RouteRecordRaw } from "vue-router";
+
+const routes: Array<RouteRecordRaw> = [
+    {
+        path: '/',
+        // redirect: '/login',
+        // redirect: { name: 'login' },
+        redirect: to => {
+            return {
+                path: '/login',
+                query: {
+                    name: "admin",
+                    age: 200
+                }
+            }
+        },  
+    },
+    {
+        path: '/login',
+        component: () => import('../components/login.vue'),
+        name: 'login'
+    },
+    {
+        path: '/reg',
+        component: () => import('../components/register.vue'),
+        name:'register'
+    },
+    // 重定向到404页面
+    {
+        path: '/:pathMatch(.*)*',
+        component: () => import('../components/notFound.vue')
+    },
+]
+
+const router = createRouter({
+    history: createWebHistory(),
+    routes: routes,
+})
+
+export default router;
+```
+
+**路由别名**
+
+每一个路由，我们可以给其起一个 path 为其作为该路由的 URL，此外还可以通过别名 alias 来定义路由的其他 URL 名称。
+
+```typescript
+import { createRouter, createWebHistory } from "vue-router";
+
+import type { RouteRecordRaw } from "vue-router";
+
+const routes: Array<RouteRecordRaw> = [
+    {
+        path: '/',
+        redirect: '/login',
+        name: 'home'
+    },
+    {
+        path: '/login',
+        component: () => import('../components/login.vue'),
+        name: 'login',
+        alias: ['/login1', '/login2'], // 除了/login 还可以访问/login1 和/login2
+    },
+]
+
+const router = createRouter({
+    history: createWebHistory(),
+    routes: routes,
+})
+
+export default router;
+```
+
+## 8. 导航守卫
+
+**全局前置守卫**
+
+1. 全局前置守卫：在 router/index.ts 中定义全局前置守卫，在每个路由切换前执行。
+
+主要是函数 router.beforeEach()，接收三个参数：
+
+- to: RouteLocationNormalized: 即将要进入的目标路由对象
+- from: RouteLocationNormalized: 当前导航即将离开的路由对象
+- next: NavigationGuardNext: 一定要调用该方法来 resolve 这个钩子，否则路由不会发生变化。
+
+以下是全局前置守卫的示例代码:
+
+```typescript
+import { createRouter, createWebHistory } from "vue-router";
+import type { RouteRecordRaw } from "vue-router";
+const routes: Array<RouteRecordRaw> = [
+    {
+        path: '/',
+        name: 'home',
+        component: () => import('../components/index.vue'),
+    },
+    {
+        path: '/login',
+        component: () => import('../components/login.vue'),
+        name: 'login',
+        alias: ['/login1', '/login2'],
+    },
+    {
+        path: '/reg/:name/:age',
+        component: () => import('../components/register.vue'),
+        name:'register'
+    },
+    {
+        path: '/404',
+        name: 'notFound',
+        component: () => import('../components/notFound.vue')
+    },
+    // 重定向到404页面
+    {
+        path: '/:pathMatch(.*)*',
+        redirect: '/404'
+    },
+]
+
+const router = createRouter({
+    history: createWebHistory(),
+    routes: routes,
+})
+
+// 白名单 如果不在白名单中，则需要登录才能访问
+const whiteList = ['/reg', '/', '/404']
+
+router.beforeEach((to, from, next) => {
+    if (whiteList.includes(to.path) || to.fullPath.length >= 10) {
+        next()
+    } else {
+        next('/404'); // 如果判断tow.path不在白名单中，并且fullPath长度大于10，则跳转到404页面
+    }
+})
+export default router;
+```
+
+**全局后置守卫**
+
+1. 全局后置守卫：在 router/index.ts 中定义全局后置守卫，在每个路由切换后执行。
+
+主要是函数 router.afterEach()，接收三个参数：
+
+- to: RouteLocationNormalized: 即将要进入的目标路由对象
+- from: RouteLocationNormalized: 当前导航即将离开的路由对象
+
+**全局前置和后置守卫 进度条案例**
+
+laodingBar.vue:
+
+```vue
+<template>
+    <div ref="bar" class="bar"></div>
+</template>
+<script setup lang="ts">
+import { ref } from 'vue';
+const bar = ref<HTMLElement>();
+
+const barSpeed = ref(0);
+
+let animationTimer = ref<number>(0);
+
+const startLoading = () => {
+    let dom = bar.value as HTMLElement;
+    barSpeed.value = 1;
+    animationTimer.value = window.requestAnimationFrame(function fn() {
+        if (barSpeed.value < 90) {
+            barSpeed.value += 1;
+            dom.style.width = `${barSpeed.value}%`;
+            dom.style.display = 'block';
+            animationTimer.value = window.requestAnimationFrame(fn);
+        } else {
+            barSpeed.value = 1;
+            window.cancelAnimationFrame(animationTimer.value);
+        }
+    });
+}
+let delayCloseBar = 0;
+let closeTimer = 0;
+const endLoading = (delay: number) => {
+    let dom = bar.value as HTMLElement;
+    setTimeout(() => {
+        closeTimer = window.requestAnimationFrame(function fn() {
+            if (barSpeed.value < 100) {
+                barSpeed.value = 100;
+                dom.style.width = `${barSpeed.value}%`;
+            } else {
+                if (delayCloseBar > 30) {
+                    dom.style.display = 'none';
+                    barSpeed.value = 1;
+                    window.cancelAnimationFrame(closeTimer);
+                }
+                delayCloseBar += 1;
+                closeTimer = window.requestAnimationFrame(fn);
+            }
+        })
+    }, delay)
+}
+
+defineExpose({
+    startLoading,
+    endLoading(delay: number) {
+        endLoading(delay);
+    },
+})
+</script>
+<style scoped>
+.bar {
+    display: none;
+    width: 100%;
+    top: 0;
+    height: 0.2vh;
+    background-color: lightblue;
+}
+</style>
+```
+
+app.vue: 
+
+```vue
+<template>
+    <loading-bar ref="loading" />
+    <h1>Fuck World!</h1>
+    <button class="margin-x" @click="index()">Index</button>
+    <button class="margin-x" @click="login()">Login</button>
+    <router-view></router-view>
+</template>
+<script setup lang="ts">
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
+import loadingBar from './components/tool/loadingBar.vue'
+const loading = ref();
+const router = useRouter()
+const index = () => {
+    router.push({
+        path: '/',
+        }
+    )
+}
+const login = () => {
+    loading.value.startLoading();
+    router.push({
+        path: '/login',
+        query: {
+            name: 'ls',
+            age: 26,
+        }
+    })
+}
+router.afterEach(() => {
+    loading.value.endLoading(2000);
+})
+</script>
+<style scoped>
+.margin-x {
+    margin-left: 20px;
+    margin-right: 20px;
+    font-size: 26px;
+}
+</style>
+```
+
+## 9. 路由元信息
+
+通过路由记录的 meta 属性可以定义路由的元信息。使用路由元信息可以在路由中附加自定义的数据，例如：
+  - 权限校验标识。
+  - 路由组件的过渡名称。
+  - 路由组件持久化缓存 (keep-alive) 的相关配置。
+  - 标题名称
+
+以下为一个设置 meta 属性来定义每个页面的标题，然后在after样例:
+
+```typescript
+import { createRouter, createWebHistory } from "vue-router";
+import type { RouteRecordRaw } from "vue-router";
+declare module 'vue-router' {
+    interface RouteMeta {
+        title: string; // ts语法 根据添加的meta属性来定义
+        age?: number;
+    }
+}
+const routes: Array<RouteRecordRaw> = [
+    {
+        path: '/',
+        name: 'home',
+        component: () => import('../components/index.vue'),
+        meta: {
+            title: '首页',
+            age: 18
+        }
+    },
+    {
+        path: '/login',
+        component: () => import('../components/login.vue'),
+        name: 'login',
+        alias: ['/login1', '/login2'],
+    },
+    {
+        path: '/reg/:name/:age',
+        component: () => import('../components/register.vue'),
+        name:'register'
+    },
+    {
+        path: '/404',
+        name: 'notFound',
+        component: () => import('../components/notFound.vue')
+    },
+    // 重定向到404页面
+    {
+        path: '/:pathMatch(.*)*',
+        redirect: '/404'
+    },
+]
+const router = createRouter({
+    history: createWebHistory(),
+    routes: routes,
+})
+// 白名单 如果不在白名单中，则需要登录才能访问
+const whiteList = ['/reg', '/', '/404']
+router.beforeEach((to, from, next) => {
+    if (whiteList.includes(to.path) || to.fullPath.length >= 10) {
+        next()
+    } else {
+        next('/404');
+    }
+})
+router.afterEach((to, from) => {
+    document.title = to.meta.title || '不知道哪一页';
+})
+
+export default router;
+```
+
+## 10. 动态路由
+
+动态路由主要是通过 `router.addRoute()` 方法来实现的，该方法可以动态添加路由。函数内参数跟在 `router/index.ts` 中的 `routes` 数组中的路由配置一样。
+
+除此之外还拥有 `router.getRoutes()` 方法，可以获取当前路由的所有路由记录。
+
+
+
