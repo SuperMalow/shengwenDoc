@@ -8,20 +8,23 @@ hero:
   tagline: "成功不必在我，但功力必不唐捐"
   actions:
     - theme: brand
-      text: 开始探索
+      text: 开始✨
       link: /linux/Linux文件常用命令
-    - theme: alt
-      text: Linux
-      link: /linux/Linux文件常用命令
+    # - theme: alt
+    #   text: Linux
+    #   link: /linux/Linux文件常用命令
     - theme: alt
       text: Front
       link: /frontend/TypescriptNote
     - theme: alt
       text: Back
       link: /backend/JsNote
+    # - theme: alt
+    #   text: Tools
+    #   link: /tools/GitNote
     - theme: alt
-      text: Tools
-      link: /tools/GitNote
+      text: Algorithm
+      link: /algorithm/study/study
 
 features:
   - title: Linux
@@ -36,11 +39,12 @@ features:
   - title: Tools
     details: 记录学习 Git、Vitepress 偏工具类型的学习笔记
     icon: 🧰
+  - title: Algorithm
+    details: 记录学习常用算法、刷算法题的笔记
+    icon: 🧠
   - title: MiddleWare
     details: 还没开始...
     icon: 🏗 ️
-  - title: DataBase
-    details: 还没开始...
-    icon: 📊
+  
 ---
 

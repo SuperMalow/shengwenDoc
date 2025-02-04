@@ -9,8 +9,8 @@ export default defineConfig({
   ignoreDeadLinks: true, // 忽略死链接
   lang: 'zh',
   head: [
-    ['link', {rel: 'icon', type:'image/jpeg', sizes: '32x32', href: '/shengwenDoc/logo.jpg'}],
-    ['link', {rel: 'apple-touch-icon', type:'image/jpeg', sizes: '180x180', href: '/shengwenDoc/logo.jpg'}]
+    ['link', { rel: 'icon', type: 'image/jpeg', sizes: '32x32', href: '/shengwenDoc/logo.jpg' }],
+    ['link', { rel: 'apple-touch-icon', type: 'image/jpeg', sizes: '180x180', href: '/shengwenDoc/logo.jpg' }]
   ],
   themeConfig: {
     // https://vitepress.dev/reference/default-theme-config
@@ -24,35 +24,56 @@ export default defineConfig({
         text: 'Linux',
         collapsed: true,
         items: [
-          {text: "常用命令", link: '/linux/Linux文件常用命令.html'},
-          {text: "SSH和SCP", link: '/linux/SSH和SCP命令.html'},
-          {text: "Tmux和Vim", link: '/linux/Tmux和Vim.html'}
+          { text: "常用命令", link: '/linux/Linux文件常用命令.html' },
+          { text: "SSH和SCP", link: '/linux/SSH和SCP命令.html' },
+          { text: "Tmux和Vim", link: '/linux/Tmux和Vim.html' }
         ]
       }, {
         text: "Frontend",
         collapsed: true,
         items: [
-          {text: "Typescript", link: '/frontend/TypescriptNote.html'},
-          {text: "Vue3", link: '/frontend/Vue3Note.html'},
-          {text: "Pinia", link: '/frontend/PiniaNote.html'},
-          {text: "Electron", link: '/frontend/ElectronNote.html'},
-          {text: "VueRouter4", link: '/frontend/VueRouter.html'}
+          { text: "Typescript", link: '/frontend/TypescriptNote.html' },
+          { text: "Vue3", link: '/frontend/Vue3Note.html' },
+          { text: "Pinia", link: '/frontend/PiniaNote.html' },
+          { text: "Electron", link: '/frontend/ElectronNote.html' },
+          { text: "VueRouter4", link: '/frontend/VueRouter.html' }
         ]
       },
       {
-        text: "Backend", 
+        text: "Backend",
         collapsed: true,
         items: [
-          {text: "Js", link: '/backend/JsNote.html'},
-          {text: "NestJs", link: '/backend/NestJsNote.html'},
+          { text: "Js", link: '/backend/JsNote.html' },
+          { text: "NestJs", link: '/backend/NestJsNote.html' },
         ]
       },
       {
-        text: "Tools", 
+        text: "Tools",
         collapsed: true,
         items: [
-          {text: "Git", link: '/tools/GitNote.html'},
-          {text: "Vitepress", link: '/tools/VitepressNote.html'},
+          { text: "Git", link: '/tools/GitNote.html' },
+          { text: "Vitepress", link: '/tools/VitepressNote.html' },
+          { text: "OhterAriticle", link: '/tools/OtherAriticle.html' }
+        ]
+      },
+      {
+        text: "Algorithm",
+        collapsed: true,
+        items: [
+          {
+            text: "study",
+            link: '/algorithm/study/study.html',
+            // items: [
+            //   {text: "study", link: '/algorithm/study/study.html'}
+            // ]
+          },
+          {
+            text: "combat",
+            link: '/algorithm/combat/combat.html',
+            // items: [
+            //   {text: "combat", link: '/algorithm/combat/combat.html'},
+            // ]
+          },
         ]
       }
     ],
