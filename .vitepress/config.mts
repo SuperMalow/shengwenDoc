@@ -53,7 +53,8 @@ export default defineConfig({
         items: [
           { text: "Git", link: '/tools/GitNote.html' },
           { text: "Vitepress", link: '/tools/VitepressNote.html' },
-          { text: "OhterAriticle", link: '/tools/OtherAriticle.html' }
+          { text: "OhterAriticle", link: '/tools/OtherAriticle.html' },
+          { text: "Nginx", link: '/tools/NginxNote.html' }
         ]
       },
       {
