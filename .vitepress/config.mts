@@ -62,11 +62,12 @@ export default defineConfig({
         collapsed: true,
         items: [
           {
-            text: "study",
+            text: "opencv",
+            link: '/algorithm/opencv/OpencvNote.html',
+          },
+          {
+            text: "classical",
             link: '/algorithm/study/study.html',
-            // items: [
-            //   {text: "study", link: '/algorithm/study/study.html'}
-            // ]
           },
           {
             text: "combat",
