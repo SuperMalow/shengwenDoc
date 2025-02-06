@@ -139,7 +139,7 @@ nginx 的配置文章位于 `/usr/local/nginx/conf/nginx.conf` 文件中。而 `
 
 1. 使用 proxy_pass 反向代理到其他服务器
 
-```nginx.conf
+```txt
 server {
     listen 5500;
     server_name localhost;
@@ -154,7 +154,7 @@ server {
 
 2. 使用 proxy_pass 实现跨域
 
-```nginx.conf
+```txt
 server {
     listen 5500;
     server_name localhost;
@@ -176,7 +176,7 @@ server {
 
 解决方法：
 
-```nginx.conf
+```txt
 server {
     listen 5500;
     server_name localhost;
@@ -195,7 +195,7 @@ server {
 
 负载均衡主要是 upstream 块，它与 server 块是同级的。
 
-```nginx.conf   
+```txt   
 # 轮询方式
 upstream backendA {
     server 192.168.1.100:8080; # 后端服务器A地址
