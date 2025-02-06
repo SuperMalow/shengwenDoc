@@ -24,7 +24,7 @@ hero:
     #   link: /tools/GitNote
     - theme: alt
       text: Algorithm
-      link: /algorithm/study/study
+      link: /algorithm/classical/classical
 
 features:
   - title: Linux

@@ -67,7 +67,7 @@ export default defineConfig({
           },
           {
             text: "classical",
-            link: '/algorithm/study/study.html',
+            link: '/algorithm/classical/classical.html',
           },
           {
             text: "combat",
