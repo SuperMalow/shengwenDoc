@@ -36,7 +36,8 @@ export default defineConfig({
           { text: "Vue3", link: '/frontend/Vue3Note.html' },
           { text: "Pinia", link: '/frontend/PiniaNote.html' },
           { text: "Electron", link: '/frontend/ElectronNote.html' },
-          { text: "VueRouter4", link: '/frontend/VueRouter.html' }
+          { text: "VueRouter4", link: '/frontend/VueRouter.html' },
+          { text: "NodeJs", link: '/frontend/NodeJsNote.html' },
         ]
       },
       {
@@ -64,6 +65,10 @@ export default defineConfig({
           {
             text: "opencv",
             link: '/algorithm/opencv/OpencvNote.html',
+          },
+          {
+            text: "machineLearning",
+            link: '/algorithm/machinelearning/MLNote.html',
           },
           {
             text: "classical",

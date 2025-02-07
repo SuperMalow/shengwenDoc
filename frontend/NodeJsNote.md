@@ -54,7 +54,7 @@ npm 的全称是 node package manager，是一个 Node.js 包管理器。它可�
 13. `bugs`：项目的 bug 报告地址。
 14. `homepage`：项目的官方网站地址或者文档地址。
 
-## npm run xxx 命令
+## 3. npm run xxx 命令
 
 终端中 `npm run xxx` 命令可以执行 `package.json` 文件中 `scripts` 字段中指定的脚本。那么这一行命令的执行过程是这样的：
 
@@ -65,7 +65,7 @@ npm 的全称是 node package manager，是一个 Node.js 包管理器。它可�
 
 如果成功找到则会根据当前电脑的去执行对应电脑平台的可执行脚本。
 
-### npm 的生命周期
+### 3.1 npm 的生命周期
 
 ```json
 "predev": "node predev.js",
@@ -77,19 +77,19 @@ npm 的全称是 node package manager，是一个 Node.js 包管理器。它可�
 2. `dev`：开发环境启动脚本
 3. `postdev`：在 `npm run dev` 之后执行的脚本
 
-## npx
+## 4. npx
 
 npx 是一个命令行工具，它是 npm 5.2.0 版本中新增的功能。它允许用户在不安装全局包的情况下，运行已安装在本地项目中的包或者远程仓库中的包。
 npx 的作用是在命令行中运行 node 包中的可执行文件，而不需要全局安装这些包。这可以使开发人员更轻松地管理包的依赖关系，并且可以避免全局污染的问题。它还可以帮助开发人员在项目中使用不同版本的包，而不会出现版本冲突的问题。
 
-### npm 和 npx 区别
+### 4.1 npm 和 npx 区别
 
 - npx 侧重于执行命令的，执行某个模块命令。虽然会自动安装模块，但是重在执行某个命令
 - npm 侧重于安装或者卸载某个模块的。重在安装，并不具备执行某个模块的功能。
 
 npx 的运行规则和 npm 是一样的 本地目录 `node_modules` 下查找 `.bin` 目录 看有没有 如果没有就去全局的 `node_moduels` 查找，如果还没有就去下载这个包然后运行命令，然后删除这个包。
 
-## npm 包的发布
+## 5. npm 包的发布
 
 首先需要创建账号: `npm adduser`
 
@@ -97,11 +97,11 @@ npx 的运行规则和 npm 是一样的 本地目录 `node_modules` 下查找 `.
 
 登陆完成后，配置好你的 `package.json` 文件，然后给项目起一个 `name` ，得保证这个 `name` 是唯一的，与别人不能一样。接着就可以进行 `npm publish` 命令发布你的包了。如果发布出去的网页出现 403 错误，则说明包名被占用了。
 
-## NodeJs 模块化
+## 6. NodeJs 模块化
 
 Nodejs 模块化规范遵循两套一 套 CommonJS 规范另一套 esm 规范
 
-### CommonJS 规范
+### 6.1 CommonJS 规范
 
 **引入模块(require)：**
 
@@ -129,7 +129,7 @@ module.exports = {
 };
 ```
 
-### ESM 规范
+### 6.2 ESM 规范
 
 **引入模块(import)：** 必须写在头部，并且在 package.json 中配置 `"type": "module"`
 
@@ -154,7 +154,7 @@ export default {
 }
 ```
 
-### Cjs 和 ESM 的区别
+### 6.3 Cjs 和 ESM 的区别
 
 - CommonJS 是基于运行时的同步加载, ESM 是基于编译时的异步加载
 - CommonJS 是可以修改值的, ESM 值并且不可修改（可读的）
