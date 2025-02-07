@@ -619,6 +619,14 @@ int main()
 
 ## 10. 滤波处理算法
 
+### 10.0 自定义卷积核
+
+可以通过以下的方式来自定义卷积核：
+
+```cpp
+Mat kernel = (Mat_<float>(3, 3) << -1, 0, 1, -1, 0, 1, -1, 0, 1);
+```
+
 ### 10.1 高通滤波
 
 主要是通过 filter2D 函数实现高通滤波。filter2D 函数完整函数声明：
@@ -1435,6 +1443,281 @@ int main()
     return 0;
 }
 ```
+
+## 14. 形态学
+
+### 14.0 自定义卷积核
+
+除了第`## 10 滤波处理` 章节的自定义卷积核，还可以通过 opencv 自带的函数来自定义卷积核。
+
+```cpp
+CV_EXPORTS_W Mat getStructuringElement(int shape, Size ksize, Point anchor = Point(-1,-1));
+// shape：形状 MORPH_RECT形态学矩形 MORPH_CROSS形态学十字形 MORPH_ELLIPSE形态学椭圆
+// ksize：卷积核大小
+// anchor：锚点 默认为(-1,-1)
+```
+
+举例创建一个7*7*1的卷积核： `Mat kernel = getStructuringElement(CV_SHAPE_RECT, Size(7,7), Point(-1,-1));`
+
+### 14.1 腐蚀
+
+腐蚀是最基本的形态学操作之一，它能够将图像的边界点消除，使图像沿着边界向内收缩，也可以将小于指定结构体元素的部分去除。
+
+#### 腐蚀原理
+
+有一个卷积核为：
+[
+    1,
+    1,
+    1,
+]
+
+当这个卷积核进行对图像做卷积的时候，有一个前提条件，**当卷积核扫过的图像满足于卷积核这个特征时，才会把这个卷积核的中心的那个像素点设置为 1**，其余都设置为 0，即完成腐蚀操作。
+
+在opencv中，使用函数 `erode` 实现图像的腐蚀操作。其函数定义为
+
+```cpp
+CV_EXPORTS_W void erode(InputArray src, OutputArray dst, InputArray kernel, Point anchor = Point(-1,-1), int iterations = 1, int borderType = BORDER_CONSTANT, const Scalar& borderValue = morphologyDefaultBorderValue());
+// kernel：卷积核
+// anchor：锚点 默认为(-1,-1)
+// iterations：腐蚀操作迭代次数 默认为1
+// borderType：边界类型 一般采用默认值
+// borderValue：边界值 一般采用默认值
+```
+
+腐蚀的样例程序如下:
+
+```cpp
+#include <opencv2/opencv.hpp>
+#include <iostream>
+using namespace cv;
+using namespace std;
+int main()
+{
+    // 读取图像
+    Mat image = imread("image.jpg", IMREAD_COLOR);
+    // 腐蚀操作
+    Mat kernel = getStructuringElement(CV_SHAPE_RECT, Size(5,5), Point(-1,-1));
+    Mat eroded;
+    erode(image, eroded, kernel);
+    // 显示结果
+    imshow("Original Image", image);
+    imshow("Eroded Image", eroded);
+    waitKey(0);
+    destroyAllWindows();
+}
+```
+
+### 14.2 膨胀
+
+膨胀操作和腐蚀操作的作用是相反的，膨胀操作能对图像的边界进行扩张。
+
+#### 膨胀原理
+
+有一个卷积核为：
+[
+    1,
+    1,
+    1,
+]
+
+当这个卷积核进行对图像做卷积的时候，有一个前提条件，当卷积核中心扫过的图像满足于卷积核中心这个特征时，才会把这个卷积核的除中心像素点的其余像素点设置为 1
+
+在opencv中，使用函数 `dilate` 实现图像的膨胀操作。其函数定义为
+
+```cpp
+CV_EXPORTS_W void dilate(InputArray src, OutputArray dst, InputArray kernel, Point anchor = Point(-1,-1), int iterations = 1, int borderType = BORDER_CONSTANT, const Scalar& borderValue = morphologyDefaultBorderValue());
+// kernel：卷积核
+// anchor：锚点 默认为(-1,-1)
+// iterations：膨胀操作迭代次数 默认为1
+// borderType：边界类型 一般采用默认值
+// borderValue：边界值 一般采用默认值
+```
+
+膨胀的样例程序如下:
+
+```cpp
+#include <opencv2/opencv.hpp>
+#include <iostream>
+using namespace cv;
+using namespace std;
+int main()
+{
+    // 读取图像
+    Mat image = imread("image.jpg", IMREAD_COLOR);
+    // 膨胀操作
+    Mat kernel = getStructuringElement(CV_SHAPE_RECT, Size(5,5), Point(-1,-1));
+    Mat dilated;
+    dilate(image, dilated, kernel);
+    // 显示结果
+    imshow("Original Image", image);
+    imshow("Dilated Image", dilated);
+    waitKey(0);
+    destroyAllWindows();
+}
+```
+
+### 14.3 通用形态学函数
+
+腐蚀操作和膨胀操作是形态学运算的基础，将腐蚀和膨胀操作进行组合，就可以实现开运算、闭运算（关运算）​、形态学梯度(Morphological Gradient)运算、礼帽运算（顶帽运算）​、黑帽运算、击中击不中等多种不同形式的运算。
+在 opencv 中，提供了 `morphologyEx` 函数来实现上诉所提到的形态学操作。其函数定义为
+
+```cpp
+CV_EXPORTS_W void morphologyEx(InputArray src, OutputArray dst, int op, InputArray kernel, Point anchor = Point(-1,-1), int iterations = 1, int borderType = BORDER_CONSTANT, const Scalar& borderValue = morphologyDefaultBorderValue());
+// op：形态学操作类型[MORPH_ERODE,MORPH_DILATE,MORPH_OPEN,MORPH_CLOSE,MORPH_GRADIENT,MORPH_TOPHAT,MORPH_BLACKHAT,MORPH_HITMISS] => [腐蚀，膨胀，开运算，闭运算，形态学梯度，顶帽，黑帽，击中与不击中]
+// kernel：卷积核
+// anchor：锚点 默认为(-1,-1)
+// iterations：操作迭代次数 默认为1
+// borderType：边界类型 一般采用默认值
+// borderValue：边界值 一般采用默认值
+```
+
+### 14.3 开运算
+
+开运算进行的操作是先将图像腐蚀，再对腐蚀的结果进行膨胀。开运算可以用于去噪、计数等。
+
+样例程序如下:
+
+```cpp
+#include <opencv2/opencv.hpp>
+#include <iostream>
+using namespace cv;
+using namespace std;
+int main()
+{
+    // 读取图像
+    Mat image = imread("image.jpg", IMREAD_COLOR);
+    // 开运算
+    Mat kernel = getStructuringElement(MORPH_RECT, Size(5,5), Point(-1,-1));
+    Mat opened;
+    morphologyEx(image, opened, MORPH_OPEN, kernel);
+    // 显示结果
+    imshow("Original Image", image);
+    imshow("Opened Image", opened);
+    waitKey(0);
+    destroyAllWindows();
+}
+```
+
+### 14.4 闭运算
+
+闭运算是先膨胀、后腐蚀的运算，它有助于关闭前景物体内部的小孔，或去除物体上的小黑点，还可以将不同的前景图像进行连接。
+
+样例程序如下:
+
+```cpp
+#include <opencv2/opencv.hpp>
+#include <iostream>
+using namespace cv;
+using namespace std;
+int main()
+{
+    // 读取图像
+    Mat image = imread("image.jpg", IMREAD_COLOR);
+    // 闭运算
+    Mat kernel = getStructuringElement(MORPH_RECT, Size(5,5), Point(-1,-1));
+    Mat closed;
+    morphologyEx(image, closed, MORPH_CLOSE, kernel);
+    // 显示结果
+    imshow("Original Image", image);
+    imshow("Closed Image", closed);
+    waitKey(0);
+    destroyAllWindows();
+}
+```
+
+### 14.5 形态学梯度
+
+形态学梯度运算是用图像的膨胀图像减腐蚀图像的操作，该操作可以获取原始图像中前景图像的边缘。
+
+样例程序如下:
+
+```cpp
+#include <opencv2/opencv.hpp>
+#include <iostream>
+using namespace cv;
+using namespace std;
+int main()
+{
+    // 读取图像
+    Mat image = imread("image.jpg", IMREAD_COLOR);
+    // 形态学梯度
+    Mat kernel = getStructuringElement(MORPH_RECT, Size(5,5), Point(-1,-1));
+    Mat gradient;
+    morphologyEx(image, gradient, MORPH_GRADIENT, kernel);
+    // 显示结果
+    imshow("Original Image", image);
+    imshow("Gradient Image", gradient);
+    waitKey(0);
+    destroyAllWindows();
+}
+```
+
+### 14.6 礼帽运算
+
+礼帽运算是用原始图像减去其开运算图像的操作。礼帽运算能够获取图像的噪声信息，或者得到比原始图像的边缘更亮的边缘信息。
+
+样例程序如下:
+
+```cpp
+#include <opencv2/opencv.hpp>
+#include <iostream>
+using namespace cv;
+using namespace std;
+int main()
+{
+    // 读取图像
+    Mat image = imread("image.jpg", IMREAD_COLOR);
+    // 礼帽运算
+    Mat kernel = getStructuringElement(MORPH_RECT, Size(5,5), Point(-1,-1));
+    Mat tophat;
+    morphologyEx(image, tophat, MORPH_TOPHAT, kernel);
+    // 显示结果
+    imshow("Original Image", image);
+    imshow("Tophat Image", tophat);
+    waitKey(0);
+    destroyAllWindows();
+}
+```
+
+### 14.7 黑帽运算
+
+黑帽运算是用闭运算图像减去原始图像的操作。黑帽运算能够获取图像内部的小孔，或前景色中的小黑点，或者得到比原始图像的边缘更暗的边缘部分。
+
+样例程序如下:
+
+```cpp
+#include <opencv2/opencv.hpp>
+#include <iostream>
+using namespace cv;
+using namespace std;
+int main()
+{
+    // 读取图像
+    Mat image = imread("image.jpg", IMREAD_COLOR);
+    // 黑帽运算
+    Mat kernel = getStructuringElement(MORPH_RECT, Size(5,5), Point(-1,-1));
+    Mat blackhat;
+    morphologyEx(image, blackhat, MORPH_BLACKHAT, kernel);
+    // 显示结果
+    imshow("Original Image", image);
+    imshow("Blackhat Image", blackhat);
+    waitKey(0);
+    destroyAllWindows();
+}
+```
+
+### 14.8 粗化 细化
+
+### 14.9 去碎屑
+
+### 14.10 抽骨架
+
+### 14.11 孔洞填充
+
+### 14.12 孔洞删除
+
+### 14.13 分水岭分割
 
 
 
