@@ -1707,17 +1707,38 @@ int main()
 }
 ```
 
-### 14.8 粗化 细化
+### 14.8 抽骨架
 
-### 14.9 去碎屑
+骨架化是指从一个二值图像中提取出形状的骨架部分。它通过迭代方法不断删除物体边缘的像素，直到只剩下一个像素宽度的骨架。
 
-### 14.10 抽骨架
+抽骨架的经典算法是：Zhang-Suen 算法。在opencv的improve模块中，提供了 `cv::ximgproc::thinning` 函数来实现 Zhang-Suen 算法。
 
-### 14.11 孔洞填充
+样例程序如下:
 
-### 14.12 孔洞删除
+```cpp
+#include <opencv2/opencv.hpp>
+#include <opencv2/ximgproc.hpp>
+#include <iostream>
+using namespace cv;
+using namespace std;
+int main()
+{
+    // 读取图像
+    Mat image = imread("image.jpg", IMREAD_COLOR);
+    // 骨架化
+    Mat skeleton;
+    ximgproc::thinning(image, skeleton, ximgproc::THINNING_ZHANGSUEN);
+    // 显示结果
+    imshow("Original Image", image);
+    imshow("Skeleton Image", skeleton);
+    waitKey(0);
+    destroyAllWindows();
+}
+```
 
-### 14.13 分水岭分割
+### 14.9 孔洞填充
+
+### 14.10 分水岭分割
 
 
 
