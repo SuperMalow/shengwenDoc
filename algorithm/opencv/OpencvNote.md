@@ -1738,6 +1738,57 @@ int main()
 
 ### 14.9 孔洞填充
 
+孔洞填充是一种在图像处理中常用的技术，主要用于填充二值图像中的孔洞。孔洞是指由前景像素相连接的边界所包围的背景区域。
+
+孔洞填充算法：迭代膨胀的方式与其原图的补集进行约束。孔洞填充公式: 第i层的结果为第i-1层的膨胀结果与原图的补集的交集。文字描述起来很抽象。
+
+样例程序:
+
+```cpp
+#include <opencv2/opencv.hpp>
+#include <iostream>
+using namespace cv;
+using namespace std;
+int main()
+{
+    // 读取图像
+    Mat image = imread("image.jpg", IMREAD_COLOR);
+    // 灰度
+    cvtColor(image, image, COLOR_BGR2GRAY);
+    // 二值化
+    Mat binary;
+    threshold(image, binary, 100, 255, THRESH_BINARY);
+    // 取原图的补集
+    Mat complement;
+    bitwise_not(binary, complement);
+    // 构建膨胀核
+    Mat kernel = getStructuringElement(MORPH_RECT, Size(3,3), Point(-1,-1));
+    // 构建起始膨胀图像
+    Mat marker = Mat::zeros(mask.size(), mask.type());
+	marker.row(0) = 255;
+	marker.row(marker.rows - 1) = 255;
+	marker.col(0) = 255;
+	marker.col(marker.cols - 1) = 255;
+    Mat marker_pre, dilation, marker_temp;
+    // 迭代膨胀
+    while (1)
+    {
+        marker_pre = marker;
+        dilate(marker, dilation, kernel);
+        bitwise_and(dilation, complement, marker_temp);
+        // cv::min(dilation, complement, marker_temp); // 由于二值化后的值只有0和255 所以,0 0则结果为0 255则结果为0 255 255则结果为255 与bitwise_and结果相同
+        if (!countNonZero(marker != marker_temp)) break;
+        else marker = maker_temp.clone();
+    }
+    cv::Mat res;
+    bitwise_not(marker, res);
+    imshow("Original Image", image);
+    imshow("Filled Image", res);
+    waitKey(0);
+    destroyAllWindows();
+}
+```
+
 ### 14.10 分水岭分割
 
 
