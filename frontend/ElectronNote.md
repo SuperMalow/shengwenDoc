@@ -1,18 +1,14 @@
 
 # Electron 集成进 Vite + Vue3 项目
 
-总结：时灵时不灵......
-
-## 创建 Electron 应用
-
-### 新建 vite 项目
+## 1. 新建 vite 项目
 
 通过 `npm create vite@latest` 创建一个 vite 项目。
 而`npm init vite`是从本地的模板创建项目，但是可能版本不是最新的。
 
-进入创建的项目目录后，执行 `npm install` 安装依赖。
+进入创建的项目目录后，执行 `npm install` 安装依赖。这些步骤都是跟创建前端项目是一样的。
 
-### 安装 Electron
+## 2. 安装 Electron 及其开发插件
 
 通过以下命令进行安装依赖
 
@@ -21,189 +17,148 @@ npm install electron -D
 npm install vite-plugin-electron -D
 ```
 
-- 如果安装失败
+## 3. 配置 vite.config.ts
 
-```bash
-# 查看详细安装日志
-npm install electron -D  --timing=true --loglevel=verbose
+点开 vite.config.ts 文件，在 plugins 数组中添加以下内容：
 
-# 切换成cnpm安装
-## 安装cnpm
-npm install -g cnpm --registry=http://registry.npmmirror.com
-## cnpm安装
-cnpm install electron -D
-```
-
-### 配置 vite.config.js
-
-```js
-import { defineConfig } from "vite";
-import vue from "@vitejs/plugin-vue";
-import Electron from "vite-plugin-electron";
+```javascript
+import { defineConfig } from 'vite'
+import vue from '@vitejs/plugin-vue'
+import electron from 'vite-plugin-electron'
 
 // https://vite.dev/config/
 export default defineConfig({
   plugins: [
     vue(),
-    Electron({
-      entry: "electron/index.js",
-    }),
-  ],
-});
+    electron({
+      entry: "electron/background.js", // 需要新建electron目录，并在其中创建background.js文件
+    })
+  ]
+})
 ```
 
-### 配置 package.json
+添加完成后，还需要添加 electron 的入口文件。
 
-主要是添加以下这三行，当然记得将`"type":"module"`给删去
+## 4. 创建 electron 入口文件
 
-```json
-  "author": "shengwen",
-  "description": "A Vue3 + Vite + Electron project",
-  "main": "dist-electron/index.js",
-```
+在项目根目录下创建 electron 目录，并在其中创建 background.js 文件。
 
-### 编写 Electron 代码
+```javascript
+import { app, BrowserWindow } from 'electron';
 
-<!-- 首先根据在`vite.config.js`中配置的`entry`路径，创建`electron/index.js`文件，然后编写 Electron 应用代码。 -->
-
-接下来编写 Electron 应用代码，主要是创建窗口，加载页面。新建文件夹`electron`，然后在`electron`文件夹下创建`background.js`文件，编写 Electron 应用的代码。
-注意：编写的 preload.js 文件，需要在`dist-electron/`文件夹下与`dist-electron/background.js`同级目录下，否则会找不到文件。
-
-```js
-import path from "path";
-const { app, BrowserWindow } = require("electron");
-
+let win;
 const createWindow = () => {
-  const win = new BrowserWindow({
-    width: 800,
-    height: 600,
-    webPreferences: {
-      contextIsolation: false, // 是否开启隔离上下文
-      nodeIntegration: true, // 渲染进程使用Node API
-      // preload: path.join(__dirname, "../electron-preload/index.js"), // 需要引用js文件
-    },
-  });
-  // 如果打包了，渲染index.html
-  if (app.isPackaged) {
-    win.loadFile(path.join(__dirname, "../index.html"));
-  } else {
-    win.loadURL(process.env["VITE_DEV_SERVER_URL"]);
-  }
-};
+    win = new BrowserWindow({
+        width: 1200,
+        height: 800,
+        webPreferences: {
+            nodeIntegration: true, // 可以在渲染进程中使用 Node.js 的 API
+            contextIsolation: false, // 关闭渲染进程的沙箱
+            webSecurity: false, // 开启跨域
+        }
+    });
+    if (!app.isPackaged) {
+        win.loadURL('http://localhost:5173/');
+        win.webContents.openDevTools(); // 打开开发者工具
+        console.log('loadURL');
+    } else {
+        win.loadFile('./dist/index.html');
+        console.log('loadFile');
+    }
+}
 
 app.whenReady().then(() => {
-  createWindow(); // 创建窗口
+    createWindow();
+    app.on('activate', () => {
+        if (BrowserWindow.getAllWindows().length === 0) {
+            createWindow();
+        }
+    });
+});
 
-  app.on("activate", () => {
-    if (BrowserWindow.getAllWindows().length === 0) {
-      createWindow();
+app.on('window-all-closed', () => {
+    if (process.platform!== 'darwin') {
+        app.quit();
     }
-  });
-});
-
-// 关闭窗口
-app.on("window-all-closed", () => {
-  if (process.platform !== "darwin") {
-    app.quit();
-  }
 });
 ```
 
-### 渲染进程和主进程之间的通信(renderer -> main / main -> renderer)
+然后运行 `npm run dev` 启动项目时，不出意外的话就会提示报错，`Error lauching app ` 这样的错误，这是因为在项目的package.json文件中没有配置 main 字段，需要在 package.json 文件中添加以下内容：
 
-1. 安装渲染插件
+```json
+"main": "electron/background.js",
+```
+
+但是，我这里推荐是这么写：
+
+```json
+"main": "dist-electron/index.html",
+```
+
+这是由于一开始我们安装了 vite-plugin-electron 插件，在vite.config.ts配置后，每一次npm run dev都会自动将/eletron/background.js编译成/dist-electron/background.js，但是在package.json中我们通常都是配置其后面打包相关的配置，所以为了统一我们将其main字段配置为/dist-electron/index.html。
+
+## 5. 使用 electron-builder 打包 electron 应用
+
+安装 electron-builder 依赖：
 
 ```bash
-# 安装渲染插件
-npm install vite-plugin-electron-renderer -D
-```
-
-2. 配置`vite.config.js`
-
-```js
-import { defineConfig } from "vite";
-import vue from "@vitejs/plugin-vue";
-import Electron from "vite-plugin-electron";
-import electronRender from "vite-plugin-electron-renderer";
-
-// https://vite.dev/config/
-export default defineConfig({
-  plugins: [
-    vue(),
-    Electron({
-      entry: "electron/index.js",
-    }),
-    electronRender(),
-  ],
-  build: {
-    emptyOutDir: false,
-  },
-});
-```
-
-渲染进程(renderer)通过 `ipcRenderer.on()` 和 `ipcRenderer.send()` 来进行接收/发送信息给主进程(main)，非常类似订阅发布模式。
-同样的，主进程(main)通过`win.webcontents.send()` 和 `ipcMain.on()` 来进行发送/接收信息给渲染进程(renderer)。
-
-### 运行项目
-
-添加完成上面的代码后，每次执行`npm run dev`都会将`/electron/background.js`编译成`/dist-electron/background.js`，并启动 Electron 应用。此时 Electron 应用启动的入口文件是`/dist-electron/background.js`。
-
-## 打包 Electron 应用
-
-### 安装 Electron 打包工具依赖
-
-通过以下几行命令进行安装依赖
-
-```bash
-# 利用electron-builder来进行打包
 npm install electron-builder -D
-
-# 调试工具
-npm install electron-devtools-installer -D
-
-# 辅助工具，快速删除某些文件或文件夹
-npm install rimraf -D
 ```
 
-### 配置打包脚本
-
-修改`package.json`
-
-1. 修改 build 命令，修改成`electron-builder`
-   - 如果发现其他博客在这个命令中发现`vue-tsc`，那是他的项目使用了 `typescript`，这个得看自己的项目是否使用，如果无则不需要这个命令
-2. 添加 build 相关配置
+在 package.json 文件中添加打包相关的配置(我这里直接贴完全部出来吧，还顺便写了elerctron-builder的编译脚本)：
 
 ```json
 {
-  "name": "vite-vue-electron",
+  "name": "electron-project",
   "private": true,
   "version": "0.0.1",
-  "author": "shengwen",
-  "description": "A Vue3 + Vite + Electron project",
-  "main": "dist-electron/index.js",
+  "type": "module",
   "scripts": {
     "dev": "vite",
-    "build": "electron-builder",
-    "preview": "vite preview"
+    "build": "vite build",
+    "preview": "vite preview",
+    "electron:build": "electron-builder"
   },
+  "dependencies": {
+    "vue": "^3.5.13"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-vue": "^5.2.1",
+    "electron": "^34.2.0",
+    "electron-builder": "^25.1.8",
+    "vite": "^6.1.0",
+    "vite-plugin-electron": "^0.29.0"
+  },
+  "main": "dist-electron/background.js",
+  "description": "An electron-vue project",
+  "author": "shengwen",
   "build": {
-    "appId": "com.electron.desktop",
-    "productName": "vite-vue-electron",
-    "asar": true,
-    "copyright": "Copyright © 2024 vite-vue-electron",
+    "appId": "com.shengwen.electron",
+    "productName": "shengwen-electron",
+    "asar": false,
+    "copyright": "Copyright © 2025 shengwen-electron",
     "directories": {
-      "output": "release/${version}"
+      "output": "build/${version}"
     },
-    "files": ["!electron", "!node_modules"], // 这里是将这些目录排除掉打包成asar文件的
+    "files": [
+      "!node_modules",
+      "!build",
+      "!electron"
+    ],
+    "icon": "public/logo.png",
     "mac": {
       "artifactName": "${productName}_${version}.${ext}",
-      "target": ["dmg"]
+      "target": [
+        "dmg"
+      ]
     },
     "win": {
       "target": [
         {
           "target": "nsis",
-          "arch": ["x64"]
+          "arch": [
+            "x64"
+          ]
         }
       ],
       "artifactName": "${productName}_${version}.${ext}"
@@ -213,16 +168,10 @@ npm install rimraf -D
       "perMachine": false,
       "allowToChangeInstallationDirectory": true,
       "deleteAppDataOnUninstall": false
-    },
-    "publish": [
-      {
-        "provider": "generic",
-        "url": "http://127.0.0.1:8080"
-      }
-    ],
-    "releaseInfo": {
-      "releaseNotes": "版本更新的具体内容"
     }
   }
 }
 ```
+
+然后执行 `npm run electron:build` 即可打包 electron 应用(前提是跟我上面的配置保持一致)。
+
