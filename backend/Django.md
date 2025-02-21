@@ -108,6 +108,198 @@ urlpatterns = [
 ]
 ```
 
+## 3. 数据库
+
+采用的数据库为MySQL，并且搭配navicat图形化工具进行数据库的管理。
+
+### mysql 驱动程序安装
+
+我们使用 django 操作数据库，其实是其底层通过 python 来进行操作的。所以我们需要安装 mysql 驱动程序。常见的 mysql 驱动程序有：
+
+- MySQL-python : 对C语言操作MYSQL进行了封装，但是不支持python3
+- mysqlclient : 是MYSQL-python的另一个分支，支持python3
+- pymysql : 纯python实现的mysql驱动程序，支持python2和python3,效率差点
+- MySQL Connector/Python : 是MySQL官方提供的python驱动程序，同样效率不高
+
+然后我们将采用的是 mysqlclient 驱动程序。
+
+```shell
+# pip安装
+pip install mysqlclient
+# conda安装
+conda install mysqlclient
+```
+
+### 连接数据库
+
+在django中连接数据库非常的简单，只需要在 settings.py 文件中进行配置即可。
+
+示例代码:
+
+```python
+DATABASES = {
+    'default': {
+        # 数据库引擎 django.db.backends.mysql django.db.backends.postgresql django.db.backends.sqlite3 django.db.backends.oracle
+        'ENGINE': 'django.db.backends.mysql',
+        # 数据库名称
+        'NAME': 'test',
+        # 数据库用户名
+        'USER': 'root',
+        # 数据库密码
+        'PASSWORD': '123456',
+        # 数据库主机地址
+        'HOST': 'localhost',
+        # 数据库端口
+        'PORT': '3306',
+    }
+}
+```
+
+### 操作数据库
+
+django操作数据库主要有两种方式：
+
+1. 通过原生的sql语句进行操作数据库。其实就是通过python db api进行操作数据库。(不推荐使用)
+
+```python
+from django.db import connection
+
+# 获取cusor对象
+cursor = connection.cursor()
+# 执行sql语句
+cursor.execute("SELECT * FROM user_info")
+# 获取查询结果
+rows = cursor.fetchall()
+for row in rows:
+    print(row)
+# 关闭cursor对象
+cursor.close()
+```
+
+2. 通过ORM框架进行操作数据库。(推荐使用)
+
+ORM 模型框架: Object relation mapping，即对象-关系映射，它是一种程序设计技术，用于将关系数据库中的数据映射到面向对象编程语言中的对象上。可以很有效的减少sql语句的编写。
+
+#### ORM 模型的创建
+
+ORM 模型通常放在 app(模块) 下的 models.py 文件中，我们需要先定义好模型类，然后通过 makemigrations 和 migrate 命令来创建数据库表。当然了，前提是这个 app(模块) 需要在项目的 INSTALLED_APPS 中进行注册安装。
+
+示例代码:
+models.py
+
+```python
+# models.py
+from django.db import models
+
+class Book(moduls.Model):
+    # null = False 表示该字段不能为空
+    name = models.CharField(max_length=100, null=False)
+    author = models.CharField(max_length=100, null=False)
+    # max_digits 最大位数，decimal_places 小数点位数
+    price = models.DecimalField(max_digits=10, decimal_places=2, null=False)
+    publish = models.CharField(max_length=100, null=False)
+    pub_date = models.DateField(null=False)
+```
+
+以上就是一个简单的 Book 模型，包含了书名、作者、价格、出版社、出版日期等字段。但其实我们少写了一个 id 字段，如果我们没有写 id 字段，那么 django 会自动给我们添加一个自增 id 字段，且该字段为主键。
+
+#### 将 ORM 模型映射到数据库中
+
+我们需要通过 makemigrations 和 migrate 命令来将 ORM 模型映射到数据库中。
+
+首先通过 make migrations 命令来生成迁移脚本文件：
+```shell
+python manage.py makemigrations
+```
+然后通过 migrate 命令来将迁移脚本文件映射到数据库中：
+```shell
+python manage.py migrate
+```
+执行完成上面两个命令后，数据库中就有了 Book 表。
+
+### 模型中常用的字段
+
+在 django 中定义了一些常用的 Field 字段来与数据库表中的字段类型来进行映射。
+
+#### AutoField
+
+映射到数据库中的类型为 int，并且有自动增长的功能。
+
+#### BigAutoField
+
+64位整型，同样有自动增长的功能。
+
+#### BooleanField
+
+在模型层面接受的是 True 或 False，但是映射在数据库中是 tinyint(1) 类型。
+
+#### CharField
+
+映射到数据库中的类型为 varchar，可以指定最大长度。
+
+#### DateField
+
+映射到数据库中的类型为 date。在使用这个字段时，可以传递以下几个参数：
+
+- auto_now：每次保存对象时，自动将当前日期写入数据库。
+- auto_now_add：第一次保存对象时，自动将当前日期写入数据库。
+
+#### DateTimeField
+
+类似于 DateField，但是映射到数据库中的类型为 datetime。跟DateField一样，可以指定参数 auto_now 和 auto_now_add。
+
+#### TimeField
+
+映射到数据库中的类型为 time。
+
+#### EmailField
+
+映射到数据库中的类型为 varchar，并且验证邮箱格式。
+
+#### FileField
+
+映射到数据库中的类型为 varchar，可以指定最大长度。
+
+#### ImageField
+
+类似于 FileField，但是验证上传的图片格式。
+
+#### FloatField
+
+映射到数据库中的类型为 float。
+
+#### IntegerField
+
+映射到数据库中的类型为 int。
+
+#### BigIntegerField
+
+映射到数据库中的类型为 bigint。
+
+#### TextField
+
+映射到数据库中的类型为 longtext。
+
+#### UUIDField
+
+映射到数据库中的类型为 char(32)，并且自动生成 uuid。一般用来当作主键
+
+#### URLField
+
+映射到数据库中的类型为 varchar，并且验证 url 格式。
+
+### 模型中常用的参数
+
+1. null：是否允许为空。即一开始数据库中该字段的值是否可以为空。
+2. blank：是否允许为空。这个和null还是存在一定区别的，null是数据库级别的，而blank则是表单级别的。
+3. db_column：指定数据库中的列名。如果没有设置这个参数，将使用模型中的字段名作为列名。
+4. default：设置默认值。
+5. primary_key：是否为主键。
+6. unique：是否唯一。
+
+### 模型中的 Meta 类
+
+对于一些模型级别的配置，我们可以在 ORM 模型中进行定义一个 Meat 内部类。然后我们可以通过对这个 Meta 类进行配置以达到限制模型的某些行为的目的。
 
 
 
