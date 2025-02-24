@@ -297,9 +297,77 @@ python manage.py migrate
 5. primary_key：是否为主键。
 6. unique：是否唯一。
 
-### 模型中的 Meta 类
 
-对于一些模型级别的配置，我们可以在 ORM 模型中进行定义一个 Meat 内部类。然后我们可以通过对这个 Meta 类进行配置以达到限制模型的某些行为的目的。
+### Meta 类
+
+对于一些模型级别的配置，可以在其内部进行建立一个 Meta 类，用于定义一些模型级别的属性，比如：db_table、ordering 等。
+
+#### db_table
+将这个模型映射到数据库中的表名，如果没有指定这个参数则将模型的名称来用作表名
+
+#### ordering
+设置在数据库查询时默认的排序方式。
+
+### 外键和表关系
+
+#### 外键的定义
+
+在 mysql 中，表有两种引擎，一种是 InnoDB，另一种是 MyISAM。如果使用的是 InnoDB 引擎，是支持外键约束的。
+
+外键的类定义为 `class ForeignKey(to, on_delete, **options)` 。第一个参数为引用的哪个模型，第二个参数则是使用外键引用的模型数据被删除后这个字段该如何处理。
+
+```python
+class User(models.Model):
+    username = models.CharField(max_length=100)
+    email = models.EmailField()
+
+class Article(models.Model):
+    title = models.CharField(max_length=100)
+    content = models.TextField()
+    author = models.ForeignKey("User", on_delete=models.CASCADE)
+```
+
+以上代码中，`Article` 模型的 `author` 字段是一个外键，它引用了 `User` 模型的 `id` 字段。当 `User` 模型的数据被删除时，`Article` 模型中的 `author` 字段也会被级联删除。
+
+当Article模型中使用了ForeignKey字段时，Django会自动在数据库中在 Article 表中创建一个 author_id 字段，并在 User 表中创建一个反向引用的 author_id 字段。
+
+另外在定义 ForeignKey 字段时，还可以外键引用本身自己的这个模型。例
+
+```python
+class Comment(models.Model):
+    context = models.TextField()
+    origin_comment = models.ForeignKey("self", on_delete=models.CASCADE, null=True, blank=True)
+    # 或者
+    # origin_comment = models.ForeignKey("Comment", on_delete=models.CASCADE, null=True, blank=True, related_name="replies")
+```
+
+#### 外键的操作
+
+如果一个模型使用了外键。那么在对方那个模型被删掉后，该进行什么样的操作。可以通过 on_delete 来指定。可以指定的类型如下：
+
+1. CASCADE：级联删除，如果外键对应的那条数据被删除了，那么这条数据也会同时被删除。
+2. PROTECT：阻止删除，如果外键对应的那条数据被删除了，那么这条数据不会被删除，而是抛出 ProtectedError 异常
+3. SET_NULL：设置为空，如果外键对应的那条数据被删除了，那么这条数据对应的外键字段的值会被设置为 null。
+4. SET_DEFAULT：设置默认值，如果外键对应的那条数据被删除了，那么这条数据对应的外键字段的值会被设置为默认值。
+5. DO_NOTHING：什么都不做，如果外键对应的那条数据被删除了，那么这条数据不会被删除。
+6. SET()：自定义设置值，如果外键对应的那条数据被删除了，那么这条数据对应的外键字段的值会被设置为 SET() 中的值。
+
+#### 表关系
+
+表之间的关系都是通过外键来进行约束的，通常有：一对一、一对多、多对多。
+
+1. 一对一关系：
+
+2. 一对多关系：
+
+3. 多对多关系：
+
+#### related_name 和 related_query_name
+
+related_name 和 related_query_name 这两个参数是用来定义反向引用的名称的。
+
+### CRUD 操作
+
 
 
 
