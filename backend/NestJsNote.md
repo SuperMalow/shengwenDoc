@@ -300,7 +300,7 @@ remove(@Param('id') id: string) {
 }
 ```
 
-## 6.3 NestJs Session
+## 6.3 NestJs Session （不太推荐，现在主流jwt）
 
 Session 是服务器为每一个用户的浏览器创建的一个会话对象，可以用来存储用户的登录信息等，而这个 session 会存储到浏览器的 cookie 中用来区分不同的用户。
 
@@ -349,24 +349,183 @@ app.use(
 );
 ```
 
-### Session 验证码样例
+## 7. 提供者 Provider
 
-原理：验证码的生成写成一个接口，然后前端通过请求该接口获取验证吗，后端生成验证码后将验证码存储到session中发给前端，前端将session存储到cokkie中，然后当用户提交完成后将输入的验证码和session一块传给后端，后端从session中取出一开始在后端生成的验证码与输入的验证码进行比对判断是否正确。
+Providers 是 Nest 的一个基本概念。许多基本的 Nest 类可能被视为 provider 提供者。接着都可以进行 constructor 注入。
 
-(目前主流的验证码方案：Token化方案JWT)
+### 7.1 Provider 基本用法
+
+modules 中引入 service 后并在 providers 字段中进行注入声明。
 
 ```typescript
-
+import { Module } from '@nestjs/common';
+import { CatsController } from './cats.controller';
+import { CatsService } from './cats.service';
 ```
 
----
+接着就可以在 Controller 中使用 CatsService 了。（这里不是非得是 Controller 而是你在哪使用 CatsService 就在哪进行 constructor 注入）
 
-3小时 nest js 入门视频: [nesjt js](https://youtu.be/8_X0nSrzrCw?si=NT3rnciSyEmFGeKx)
+```typescript
+@Controller('cats')
+export class CatsController {
+  constructor(private readonly catsService: CatsService) {}
 
+  @Get()
+  async findAll() {
+    return this.catsService.findAll();
+  }
+}
+```
 
-## 模块化概念
+### 7.2 Provider 自定义类的用法
 
-### 共享模块
+7.1中基本用法主要是nest的语法糖。接下来是自定义的用法。
+
+```typescript
+import { Module } from '@nestjs/common';
+import { CatsController } from './cats.controller';
+import { CatsService } from './cats.service';
+
+@Module({
+  controllers: [CatsController],
+  providers: [
+    {
+      provide: 'cat_service', // 自定义的提供者名称
+      useClass: CatsService,
+    },
+  ],
+})
+export class CatsModule {}
+```
+
+接着在 Controller 中通过constructor注入自定义的提供者名称就可以使用 CatsService 了。（这里不是非得是 Controller 而是你在哪使用 CatsService 就在哪进行 constructor 注入）
+
+```typescript
+import { Controller, Get } from '@nestjs/common';
+import { Inject } from '@nestjs/common';
+import { CatService } from './cats.service';
+
+@Controller('cats')
+export class CatsController {
+  constructor(@Inject('cat_service') private readonly catsService: CatService) {}
+
+  @Get()
+  async findAll() {
+    return this.catsService.findAll();
+  }
+}
+```
+
+### 7.3 Provider 自定义值的用法
+
+通过 useValue 自定义提供者的值。
+
+```typescript
+import { Module } from '@nestjs/common';
+import { CatsController } from './cats.controller';
+import { CatsService } from './cats.service';
+
+@Module({
+  controllers: [CatsController],
+  providers: [
+    {
+      provide: 'cat_service',
+      useClass: CatsService,
+    },
+    {
+      provide: 'config',
+      useValue: {
+        apiUrl: 'http://localhost:3000',
+      },
+    }
+  ],
+})
+export class CatsModule {}
+```
+
+接着在想要使用的地方进行注入即可。
+
+```typescript
+import { Controller, Get, Inject } from '@nestjs/common';
+
+@controller('cats')
+export class CatsController {
+  constructor(
+    @Inject('cat_service') private readonly catsService: CatsService,
+    @Inject('config') private readonly config: string) {}
+
+    @Get()
+    findAll() {
+      return this.catsService.findAll();
+    }
+
+    @Get('config')
+    getConfig() {
+      return this.config;
+    }
+}
+```
+
+### 7.4 Provider 自定义工厂函数的用法
+
+通过 useFactory 自定义提供者的工厂函数。
+工厂设计模式: 工厂模式是一种创建型设计模式，它可以用来创建对象，但不直接实例化对象，而是通过工厂方法来返回一个实例。
+
+```typescript
+import { Module } from '@nestjs/common';
+import { CatsController } from './cats.controller';
+import { CatsService } from './cats.service';
+
+@Module({
+  controllers: [CatsController],
+  providers: [
+    {
+      provide: 'cat_service',
+      useFactory: () => new CatsService(), // 自定义的提供者工厂函数
+    },
+  ],
+})
+export class CatsModule {}
+```
+
+使用的话同样是通过构造函数的方式使用Inject注入。就不再进行代码演示了。
+
+### 7.4 Provider 异步模式的用法
+
+可以使用 useFactory 返回一个 Promsise 对象，来实现异步模式
+
+```typescript
+import { Module } from '@nestjs/common';
+import { CatsController } from './cats.controller';
+import { CatsService } from './cats.service';
+
+@Module({
+  controllers: [CatsController],
+  providers: [
+    {
+      provide: 'cat_service',
+      useFactory: () => new CatsService(), // 自定义的提供者工厂函数
+    },
+    {
+      provide: 'sync',
+      async useFactory: () => {
+        return await new Promise((resolve) => {
+          setTimeout(() => {
+            resolve('sync');
+          }, 1000);
+        }
+      }
+    }
+  ],
+})
+export class CatsModule {}
+```
+
+使用的话同样是通过构造函数的方式使用Inject注入。就不再进行代码演示了。
+
+## 8. 模块化概念
+
+### 8.1 共享模块
 
 假设存在这样的需求，Order模块需要依赖User模块中的UserService。这时可以将UserService添加到UserModule的exports中，使之成为共享服务。这样，Order模块只需导入UserModule即可访问UserService。
 
@@ -408,7 +567,9 @@ export class OrderService {
 })
 ```
 
+## 9. 中间件
 
+中间件是路由处理程序之前的函数，中间件函数可以访问请求和响应对象。
 
 
 
