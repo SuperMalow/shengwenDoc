@@ -139,7 +139,7 @@ import data from "./data.json" assert { type: "json" }; // 引入json文件需�
 import * as all from "./all.js"; // 加载模块的整体对象
 const flag = true;
 if (flag) {
-    import('./test.js').then(); // 动态导入模块
+  import("./test.js").then(); // 动态导入模块
 }
 ```
 
@@ -147,16 +147,68 @@ if (flag) {
 
 ```js
 const add = (a, b) => {
-    return a + b;
-}
+  return a + b;
+};
 export default {
-    name: 'zs',
-}
+  name: "zs",
+};
 ```
 
 ### 6.3 Cjs 和 ESM 的区别
 
 - CommonJS 是基于运行时的同步加载, ESM 是基于编译时的异步加载
 - CommonJS 是可以修改值的, ESM 值并且不可修改（可读的）
-- CommonJS 不可以 tree shaking, ESM 支持tree shaking
+- CommonJS 不可以 tree shaking, ESM 支持 tree shaking
 - CommonJS 中顶层的 this 指向这个模块本身，而 ES6 中顶层 this 指向 undefined
+
+## 7. NodeJs 全局变量
+
+在浏览器中，全局变量是 window 对象，而在 NodeJs 中，全局变量是 global 对象。
+
+现在可以通过 `globalThis` 这个变量来获取全局变量，它是 ES2020 引入的，可以兼容浏览器和 NodeJs。
+
+```js
+globalThis.name = "sw";
+console.log(globalThis.name); // 输出 "sw"
+console.log(global.name); // node 内输出 "sw"
+console.log(window.name); // 浏览器内输出 "sw"
+```
+
+### NodeJS 与在浏览器的 JS 的区别
+
+首先 JS 是由 ECMAScript Dom Bom 组成的。但是在 NodeJs 中是无法进行使用 DOM 和 BOM 的。所有与 DOM 或 BOM 相关的 API 都是无法进行使用的，会在直接报错。
+
+### Node 环境内置 API
+
+#### \_\_dirname
+
+`__dirname` 是一个全局变量，它指向当前模块文件所在的目录。即执行该脚本所在的目录。
+
+#### \_\_filename
+
+`__filename` 是一个全局变量，它指向当前模块文件的完整路径。跟上面的区别在于，会多出当前的文件名。
+
+#### process
+
+`process` 是一个全局变量，它是一个对象，包含了当前 Node 进程的一些信息。
+
+- `process.argv` 是一个数组，包含了执行脚本时传入的参数。`node index.js -x 1 -y 2` 则 `process.argv` 值为 `["node", "index.js", "-x", "1", "-y", "2"]`
+- `process.cwd()` 是一个方法，返回当前进程的工作目录。
+- `process.exit()` 是一个方法，可以退出当前进程。
+- `process.on('exit', function(code) { })` 一个事件，当 Node 进程退出时，会触发该事件。不只是可以监听退出事件，还可以监听其他事件。
+
+## 8. CSR、SSR、SEO
+
+CSR（Client Side Rendering）：客户端渲染，即在`浏览器`端将 HTML、CSS、JavaScript 代码`通过 JS 动态生成`页面。
+
+SSR（Server Side Rendering）：服务器端渲染，即在`X服务器`端将 HTML、CSS、JavaScript 代码`通过 NodeJs 动态生成`(生成完成页面后再将页面数据返回给前端)页面。
+
+很明显的一个区别就是，CSR 应用通常会白屏时间比较久，而 SSR 应用则可以将页面的渲染时间缩短到很短。另外就是 SSR 对于 SEO 的优化效果更好。
+
+SEO（Search Engine Optimization）：搜索引擎优化，即通过对网站的`结构、内容、关键字`等进行优化，让网站可以被搜索引擎收录，从而提高网站的排名。
+
+因为 CSR 都是 js 动态生成的对于 HTML 的内容很少，爬虫很难爬到其中的内容，而 SSR 都是服务端渲染的，且返回的都是 HTML 页面，对于 SEO 的爬虫来说，容易识别更多的信息。
+
+CSR 适合做一些 ToB 的管理后台系统等。
+
+SSR 适合做一些大型的社交网站、电商网站、新闻网站等，因为这些网站需要让更多人知道，而 SSR 本身 对于 SEO 有一个很不错的优化。
