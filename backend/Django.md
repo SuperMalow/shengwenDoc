@@ -1,19 +1,18 @@
-
 # Django 学习笔记
 
 ## 0. 基础知识入门
 
-### URL概念
+### URL 概念
 
 URL（Uniform Resource Locator）是互联网上用来标识信息资源的字符串，它由若干部分组成，包括：协议、域名、端口号、路径、参数、锚点、查询字符串。
 
 `https://www.baidu.com/index.html?x=1#haha` => `协议://域名:端口号/路径?参数#锚点`
 
-- 协议：用来指定访问资源的协议，如http、https、ftp等。
-- 域名：用来指定访问资源的域名，如baidu.com。
-- 端口号：用来指定访问资源的端口号，如80、8080等。
+- 协议：用来指定访问资源的协议，如 http、https、ftp 等。
+- 域名：用来指定访问资源的域名，如 baidu.com。
+- 端口号：用来指定访问资源的端口号，如 80、8080 等。
 - 路径：用来指定访问资源的路径，如/index.html。
-- 查询参数：用来指定访问资源的附加参数，通常以?开头，如x=1。
+- 查询参数：用来指定访问资源的附加参数，通常以?开头，如 x=1。
 - 锚点：用来指定页面内的某个位置，如#haha。
 
 ## 1. 创建 Django 项目
@@ -26,7 +25,7 @@ pip install django
 
 ### 1.1 更换 pip 安装源
 
-在Linux和macOS系统中，pip的配置文件通常位于~/.pip/pip.conf；在Windows系统中，配置文件可能位于C:\Users\<用户名>\pip\pip.ini。如果文件不存在，可以手动创建。
+在 Linux 和 macOS 系统中，pip 的配置文件通常位于~/.pip/pip.conf；在 Windows 系统中，配置文件可能位于 C:\Users\<用户名>\pip\pip.ini。如果文件不存在，可以手动创建。
 
 ```txt
 [global]
@@ -61,12 +60,12 @@ python manage.py runserver 端口号
 
 ## 3. Django 项目结构介绍
 
-### 项目结构 
+### 项目结构
 
 1. manage.py：项目的管理脚本，用来启动项目、创建应用、数据库迁移等。之前运行项目就是通过这个脚本来进行运行的。
 2. settings.py：项目的配置文件，用来设置项目的全局配置，如数据库配置、静态文件配置等。
 3. urls.py：项目的路由配置文件，用来设置项目的路由规则，如 URL 到视图的映射关系。
-4. wsgi.py：项目的WSGI配置文件，用来配置项目的Web服务器接口，如Apache、Nginx等。
+4. wsgi.py：项目的 WSGI 配置文件，用来配置项目的 Web 服务器接口，如 Apache、Nginx 等。
 
 ### project 和 app 的关系
 
@@ -80,7 +79,7 @@ python manage.py startapp app(模块)名称
 
 ## 2. URL 分发步骤
 
-当访问一个URL的时候，Django会按照以下步骤进行分发：
+当访问一个 URL 的时候，Django 会按照以下步骤进行分发：
 
 1. Django 加载项目的配置文件 settings.py，获取 URL 配置信息。
 2. Django 根据 URL 配置信息，找到对应的视图函数。
@@ -103,7 +102,7 @@ def index(request):
 
 ### URL 映射
 
-在写完视图View后，通常需要配置 URL 的映射，即用户需要访问哪个 URL 来进行获取对应的资源请求。
+在写完视图 View 后，通常需要配置 URL 的映射，即用户需要访问哪个 URL 来进行获取对应的资源请求。
 
 在项目的 urls.py 文件中，可以配置 URL 映射，通常是配置 urlpatterns 列表。示例代码如下：
 
@@ -116,21 +115,18 @@ urlpatterns = [
 ]
 ```
 
-<<<<<<< HEAD
-#### URL 中添加参数
-=======
 ## 3. 数据库
 
-采用的数据库为MySQL，并且搭配navicat图形化工具进行数据库的管理。
+采用的数据库为 MySQL，并且搭配 navicat 图形化工具进行数据库的管理。
 
 ### mysql 驱动程序安装
 
 我们使用 django 操作数据库，其实是其底层通过 python 来进行操作的。所以我们需要安装 mysql 驱动程序。常见的 mysql 驱动程序有：
 
-- MySQL-python : 对C语言操作MYSQL进行了封装，但是不支持python3
-- mysqlclient : 是MYSQL-python的另一个分支，支持python3
-- pymysql : 纯python实现的mysql驱动程序，支持python2和python3,效率差点
-- MySQL Connector/Python : 是MySQL官方提供的python驱动程序，同样效率不高
+- MySQL-python : 对 C 语言操作 MYSQL 进行了封装，但是不支持 python3
+- mysqlclient : 是 MYSQL-python 的另一个分支，支持 python3
+- pymysql : 纯 python 实现的 mysql 驱动程序，支持 python2 和 python3,效率差点
+- MySQL Connector/Python : 是 MySQL 官方提供的 python 驱动程序，同样效率不高
 
 然后我们将采用的是 mysqlclient 驱动程序。
 
@@ -143,7 +139,7 @@ conda install mysqlclient
 
 ### 连接数据库
 
-在django中连接数据库非常的简单，只需要在 settings.py 文件中进行配置即可。
+在 django 中连接数据库非常的简单，只需要在 settings.py 文件中进行配置即可。
 
 示例代码:
 
@@ -168,9 +164,9 @@ DATABASES = {
 
 ### 操作数据库
 
-django操作数据库主要有两种方式：
+django 操作数据库主要有两种方式：
 
-1. 通过原生的sql语句进行操作数据库。其实就是通过python db api进行操作数据库。(不推荐使用)
+1. 通过原生的 sql 语句进行操作数据库。其实就是通过 python db api 进行操作数据库。(不推荐使用)
 
 ```python
 from django.db import connection
@@ -187,9 +183,9 @@ for row in rows:
 cursor.close()
 ```
 
-2. 通过ORM框架进行操作数据库。(推荐使用)
+2. 通过 ORM 框架进行操作数据库。(推荐使用)
 
-ORM 模型框架: Object relation mapping，即对象-关系映射，它是一种程序设计技术，用于将关系数据库中的数据映射到面向对象编程语言中的对象上。可以很有效的减少sql语句的编写。
+ORM 模型框架: Object relation mapping，即对象-关系映射，它是一种程序设计技术，用于将关系数据库中的数据映射到面向对象编程语言中的对象上。可以很有效的减少 sql 语句的编写。
 
 #### ORM 模型的创建
 
@@ -219,13 +215,17 @@ class Book(moduls.Model):
 我们需要通过 makemigrations 和 migrate 命令来将 ORM 模型映射到数据库中。
 
 首先通过 make migrations 命令来生成迁移脚本文件：
+
 ```shell
 python manage.py makemigrations
 ```
+
 然后通过 migrate 命令来将迁移脚本文件映射到数据库中：
+
 ```shell
 python manage.py migrate
 ```
+
 执行完成上面两个命令后，数据库中就有了 Book 表。
 
 ### 模型中常用的字段
@@ -238,7 +238,7 @@ python manage.py migrate
 
 #### BigAutoField
 
-64位整型，同样有自动增长的功能。
+64 位整型，同样有自动增长的功能。
 
 #### BooleanField
 
@@ -257,7 +257,7 @@ python manage.py migrate
 
 #### DateTimeField
 
-类似于 DateField，但是映射到数据库中的类型为 datetime。跟DateField一样，可以指定参数 auto_now 和 auto_now_add。
+类似于 DateField，但是映射到数据库中的类型为 datetime。跟 DateField 一样，可以指定参数 auto_now 和 auto_now_add。
 
 #### TimeField
 
@@ -302,21 +302,22 @@ python manage.py migrate
 ### 模型中常用的参数
 
 1. null：是否允许为空。即一开始数据库中该字段的值是否可以为空。
-2. blank：是否允许为空。这个和null还是存在一定区别的，null是数据库级别的，而blank则是表单级别的。
+2. blank：是否允许为空。这个和 null 还是存在一定区别的，null 是数据库级别的，而 blank 则是表单级别的。
 3. db_column：指定数据库中的列名。如果没有设置这个参数，将使用模型中的字段名作为列名。
 4. default：设置默认值。
 5. primary_key：是否为主键。
 6. unique：是否唯一。
-
 
 ### Meta 类
 
 对于一些模型级别的配置，可以在其内部进行建立一个 Meta 类，用于定义一些模型级别的属性，比如：db_table、ordering 等。
 
 #### db_table
+
 将这个模型映射到数据库中的表名，如果没有指定这个参数则将模型的名称来用作表名
 
 #### ordering
+
 设置在数据库查询时默认的排序方式。
 
 ### 外键和表关系
@@ -340,7 +341,7 @@ class Article(models.Model):
 
 以上代码中，`Article` 模型的 `author` 字段是一个外键，它引用了 `User` 模型的 `id` 字段。当 `User` 模型的数据被删除时，`Article` 模型中的 `author` 字段也会被级联删除。
 
-当Article模型中使用了ForeignKey字段时，Django会自动在数据库中在 Article 表中创建一个 author_id 字段，并在 User 表中创建一个反向引用的 author_id 字段。
+当 Article 模型中使用了 ForeignKey 字段时，Django 会自动在数据库中在 Article 表中创建一个 author_id 字段，并在 User 表中创建一个反向引用的 author_id 字段。
 
 另外在定义 ForeignKey 字段时，还可以外键引用本身自己的这个模型。例
 
@@ -379,17 +380,16 @@ related_name 和 related_query_name 这两个参数是用来定义反向引用�
 
 ### CRUD 操作
 
->>>>>>> 910832acdbd87d7eee2020271c9604cbea745a79
-
 如果只局限于 URL 中的话，那么从后端可以从前端获取的参数主要通过两种方式：
-1. 通过 query string（查询字符串）：即URL中出现?号其后面的参数，如：http://www.example.com/index.php?name=value。那么就会读取?后面的参数。
+
+1. 通过 query string（查询字符串）：即 URL 中出现?号其后面的参数，如：http://www.example.com/index.php?name=value。那么就会读取?后面的参数。
 2. 通过 path 路径来进行参数传递，有点类似 Restful 风格，即通过路径来传递参数，如：http://www.example.com/user/1。那么就会读取路径中的参数。
 
 接下来演示以上两种方式在 django 中的获取和使用。
 
 1. 首先在 app(模块) 中的 views.py 文件中定义视图函数，并编写以下函数
 
-```python   
+```python
 from django.shortcuts import render, HttpResponse
 # query string 方法
 def book_list_query(request):
@@ -400,7 +400,7 @@ def book_list_path(request, book_id):
     return HttpResponse(f"Book ID path: {book_id}")
 ```
 
-2. 编写完成后，在urls.py文件中进行配置
+2. 编写完成后，在 urls.py 文件中进行配置
 
 ```python
 from django.contrib import admin
@@ -418,24 +418,25 @@ urlpatterns = [
 
 #### path 函数
 
-在 django 中，path函数定义为：
+在 django 中，path 函数定义为：
 
 ```python
 path(route, view, name=None, kwargs=None)
 ```
 
 - route：URL 路径，如 `/book/list/`。
-  - 其中可以定义参数为指定类型，默认的类型为str，如 `<str:book_name>`，表示 book_name 参数为字符串类型，可以输入除了/之外的任意字符
+  - 其中可以定义参数为指定类型，默认的类型为 str，如 `<str:book_name>`，表示 book_name 参数为字符串类型，可以输入除了/之外的任意字符
   - 如 `<int:book_id>`，表示 book_id 参数为整数类型，可以输入数字
-  - 如 `<uuid:book_uuid>`，表示 book_uuid 参数为 UUID 类型，可以输入32位的字符串
-  - 如 `<slug:book_slug>`，表示 book_slug 参数为 slug 类型，可以输入以-或_分割的字符串
+  - 如 `<uuid:book_uuid>`，表示 book_uuid 参数为 UUID 类型，可以输入 32 位的字符串
+  - 如 `<slug:book_slug>`，表示 book*slug 参数为 slug 类型，可以输入以-或*分割的字符串
   - 如 `<path:file_path>`，表示 file_path 参数为路径类型, 可以输入/分割的字符串
 - view：视图函数，如 `views.book_list_query` 或 `views.book_list_path`。
-- name：URL别名，可用于反向解析。
+- name：URL 别名，可用于反向解析。
 - kwargs：额外参数，可用于传递给视图函数。
 
 使用样例：
 views.py 文件：
+
 ```python
 from django.shortcuts import render, HttpResponse
 # query string 方法 http://127.0.0.1:8000/book/123%20hah/
@@ -454,7 +455,9 @@ def book_list_slug(request, book_slug):
 def book_list_uuid(request, book_uuid):
     return HttpResponse(f"Book UUID: {book_uuid}")
 ```
+
 urls.py 文件：
+
 ```python
 from django.contrib import admin
 from django.urls import path
@@ -474,7 +477,7 @@ urlpatterns = [
 
 通常情况下，一个项目中会有多个模块，每个模块都有自己的 urls 模块，这些模块可以被其他模块的 urls 模块包含，这样可以将 URL 分发到不同的模块中。
 
-一下将演示如何在一个模块中包含另一个模块的 urls 模块。这里以根目录的 urls.py 引入另一个 movice 模块的urls为例。
+一下将演示如何在一个模块中包含另一个模块的 urls 模块。这里以根目录的 urls.py 引入另一个 movice 模块的 urls 为例。
 
 movice 模块下的 urls.py 文件，另外需要注意的是，为了避免多个模块的路由 name 出现重名的风险，建议每一个 urls.py 文件都设置一个 app_name 当作命名空间：
 
@@ -491,7 +494,7 @@ urlpatterns = [
 ]
 ```
 
-根目录下的urls.py文件：
+根目录下的 urls.py 文件：
 
 ```python
 # urls.py
@@ -544,7 +547,7 @@ urlpatterns = [
 
 在 Django 中，渲染模版有两种方式：
 
-1. 使用 render_to_string() 方法，直接将模版渲染成字符串。然后再将这个字符串通过HttpResponse()方法返回给客户端。
+1. 使用 render_to_string() 方法，直接将模版渲染成字符串。然后再将这个字符串通过 HttpResponse()方法返回给客户端。
 
 ```python
 from django.shortcuts import render, HttpResponse
