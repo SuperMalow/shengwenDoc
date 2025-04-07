@@ -215,4 +215,131 @@ SSR 适合做一些大型的社交网站、电商网站、新闻网站等，因�
 
 ## 9. NodeJs Path 模块
 
-首先介绍posix，posix是Portable Operating System Interface（可移植操作系统接口）的缩写，它是一套标准，定义了操作系统的接口。遵循这个规范的系统有：Linux、Unix、Mac OS X、Windows wsl 等
+首先介绍 posix，posix 是 Portable Operating System Interface（可移植操作系统接口）的缩写，它是一套标准，定义了操作系统的接口。遵循这个规范的系统有：Linux、Unix、Mac OS X、Windows wsl 等。
+
+但是 Windows 没有遵守这个标准，Windows 在路径上采用了不同于 posix 路径表示方法，即为反斜杠`\`.
+
+### path.basename()
+
+函数返回给定路径中的最后一部分
+
+```js
+const path = require("node:path");
+let pathUrl = "a/b/c/foo/index.html";
+console.log(path.posix.basename(pathUrl)); // posix写法 index.html
+console.log(path.win32.basename(pathUrl)); // windows写法 index.html
+```
+
+### path.dirname()
+
+跟 path.baseename()互补，这是返回该文件的所在目录。
+
+```js
+const path = require("node:path");
+let pathUrl = "a/b/c/foo/index.html";
+console.log(path.dirname(pathUrl)); // a/b/c/foo
+```
+
+### path.extname()
+
+返回所传路径文件的扩展名
+
+```js
+const path = require("node:path");
+let pathUrl = "a/b/c/foo/index.html";
+console.log(path.extname(pathUrl)); // html
+```
+
+### path.join()
+
+这个 API 主要用来拼接路径的，而且支持`../`和`./`这样的操作符。
+
+```js
+const path = require("node:path");
+
+path.join("a", "b", "c", "../", "c"); // a\b\c
+```
+
+### path.resolve()
+
+该 API 主要用于相对路径解析成`绝对路径`
+
+```js
+const path = require("node:path");
+
+console.log(path.resolve(__dirname, "./index.html")); // C:\Users\plc\Desktop\my\testnode\index.html
+```
+
+### path.parse() 与 path.format()
+
+parse 是解析文件路径，接受一个路径，然后返回一个包含路径各个组成部分的对象。
+
+```js
+const path = require("node:path");
+let pathUrl = "/Desktop/a/b/c/d/index.html";
+console.log(path.parse(pathUrl));
+// {
+//   root: '/',
+//   dir: '/Desktop/a/b/c/d', // 所在目录
+//   base: 'index.html', // 完整文件名
+//   ext: '.html',
+//   name: 'index' // 去除扩展名的文件名
+// }
+```
+
+而 path.format()则是 parse 的反过来
+
+```js
+const path = require("node:path");
+
+let pathObj = {
+  root: "/",
+  dir: "/Desktop/a/b/c/d",
+  base: "index.html",
+  ext: ".html",
+  name: "index",
+};
+
+console.log(path.format(pathObj)); // /Desktop/a/b/c/d\index.html
+```
+
+## 10. Nodejs Os 模块
+
+Nodejs 的 os 模块主要可以跟系统进行交，获取系统级别的信息、一些简单的操作。
+
+### os.type()、os.platform()、os.relase()、os.homedir()、os.arch()
+
+- os.type() 获取系统的类型，Linux、Darwin、Windows_NT
+- os.platform() 获取操作系统所属平台
+- os.relase() 返回操作系统的版本号
+- os.homedir() 返回用户的家目录
+- os.arch() 返回操作系统的架构
+
+### os.cpus()
+
+返回 CPU 线程的详细信息
+
+```js
+const os = require("node:os");
+console.log(os.cpus()); // 返回CPU的核心的详细信息
+console.log(os.cpus().length); // 返回CPU的核心数量
+```
+
+### os.networkInterfaces()
+
+返回操作系统的网络信息，其中返回的 internal: 表示本地回环接口是否是内部接口，如果是 ture 表示是内部接口，false 表示是外部接口。外部接口能够访问到外网，而内部接口不能。
+
+```js
+const os = require("node:os");
+
+let network = os.networkInterfaces();
+
+network = Object.values(network).flat();
+
+// 枚举所有合法的IPv4网卡
+for (const item of network) {
+  if (item.family === "IPv4" && !item.internal) {
+    console.log(item.address);
+  }
+}
+```
