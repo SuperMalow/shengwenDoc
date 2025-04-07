@@ -212,3 +212,7 @@ SEO（Search Engine Optimization）：搜索引擎优化，即通过对网站的
 CSR 适合做一些 ToB 的管理后台系统等。
 
 SSR 适合做一些大型的社交网站、电商网站、新闻网站等，因为这些网站需要让更多人知道，而 SSR 本身 对于 SEO 有一个很不错的优化。
+
+## 9. NodeJs Path 模块
+
+首先介绍posix，posix是Portable Operating System Interface（可移植操作系统接口）的缩写，它是一套标准，定义了操作系统的接口。遵循这个规范的系统有：Linux、Unix、Mac OS X、Windows wsl 等
