@@ -521,4 +521,128 @@ childProcess.on("message", (msg) => {
 });
 ```
 
-### exec、execFile、spawn
+## 13， Nodejs 调用 ffmpeg 进行视频处理
+
+[FFMPEG 下载地址 s](http://ffmpeg.p2hp.com/download.html)
+
+下载完成后，需要配置一个环境变量即可。
+
+### 将 MP4 文件转换为 GIF、AVI 等格式
+
+```js
+const { execSync } = require("child_process");
+
+execSync("ffmpeg -i test.mp4 test.gif", { stdio: "inherit" }); // 将 MP4 转换为 GIF 格式 并且输出到控制台
+```
+
+### 提取视频中的音频
+
+```js
+const { execSync } = require("child_process");
+execSync("ffmpeg -i test.mp4 -vn -acodec copy test.aac", { stdio: "inherit" }); // 提取视频中的音频  并且输出到控制台;
+// execSync("ffmpeg -i test.mp4 test.mp3", { stdio: "inherit" })
+```
+
+### 裁剪视频
+
+```js
+const { execSync } = require("child_process");
+execSync("ffmpeg -i test.mp4 -ss 00:00:00 -t 00:00:05 -c copy test1.mp4", {
+  stdio: "inherit",
+}); // 裁剪视频 从第0秒开始，截取5秒
+
+// execSync("ffmpeg -i test.mp4 -ss 10 -to 20 test1.mp4", {
+//   stdio: "inherit",
+// }); // 裁剪视频 从第10秒开始，截取到20秒
+```
+
+### 添加水印
+
+```js
+const { execSync } = require("child_process");
+execSync(
+  "ffmpeg -i test.mp4 -i logo.png -filter_complex overlay=10:10 test1.mp4",
+  { stdio: "inherit" }
+); // 添加图片水印
+// execSync(
+//   "ffmpeg -i test.mp4 -vf drawtext=text='Hello World':x=10:y=10 test1.mp4",
+//   { stdio: "inherit" }
+// ); // 添加文字水印在视频的左上角(10,10)
+```
+
+### 去除水印
+
+```js
+const { execSync } = require("child_process");
+execSync("ffmpeg -i test.mp4 -vf delogo=x=10:y=10:w=100:h=100 test1.mp4", {
+  stdio: "inherit",
+}); // 去除水印
+```
+
+## 14. Nodejs Events 事件
+
+Nodejs 核心 API 都是采用异步事件驱动架构，Nodejs 事件模型采用了，`发布订阅`设计模式。
+
+发布订阅设计模式：即实现 off on emit once 主要这四个方法。
+
+- off 用于取消订阅
+- on 用于订阅
+- emit 用于发布
+- once 用于订阅一次
+
+```js
+const eventEmitter = require("events");
+
+const event = new eventEmitter();
+
+// 订阅 test 事件(这个事件名称随便起)
+event.on("test", (val) => {
+  console.log("test event emitted: " + val);
+});
+
+// 发布 test 事件
+event.emit("test", "Hello test");
+
+// 订阅 ttt 事件，但是只会触发一次，无论后续发布多少次都只会触发一次
+event.once("ttt", (val) => {
+  console.log("ttt event emitted: " + val);
+});
+
+// 发布多次，但是只会触发一次
+event.emit("ttt", "Hello ttt");
+event.emit("ttt", "Hello ttt");
+
+const fn = (val) => {
+  console.log("ttt event emitted: " + val);
+  // 取消订阅 ttt 事件
+  event.off("hhh", fn);
+};
+
+// 订阅 hhh 事件
+event.on("hhh", fn);
+
+// 多次发布 hhh 事件
+event.emit("hhh", "Hello hhh");
+event.emit("hhh", "Hello hhh");
+```
+
+### Events 的选项设置
+
+`event.setMaxListeners` 可以设置 on 订阅事件的最大数量，默认为 10 个。
+
+```js
+const EventEmitter = require("events");
+
+const event = new EventEmitter();
+console.log("max listeners: ", event.getMaxListeners());
+event.setMaxListeners(20);
+const fn = (data) => {
+  console.log(data);
+};
+
+for (let i = 0; i < 20; i++) {
+  event.on("test", fn);
+}
+
+event.emit("test", `i=1`);
+```
