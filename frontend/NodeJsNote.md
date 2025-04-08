@@ -343,3 +343,96 @@ for (const item of network) {
   }
 }
 ```
+
+## 11. Nodejs process 模块
+
+process 是Nodejs操作当前进程和控制当前进程的API。由于process是挂载在globalThis这个全局变量上的，所以可以直接使用。不需要引入模块。
+
+### process.argv
+
+返回一个数组，包含了执行脚本时传入的参数。
+
+```js
+// 运行命令: node index.js -x 1 -y 2
+console.log(process.argv); // ["node", "index.js", "-x", "1", "-y", "2"]
+```
+
+### process.cwd()
+
+返回当前进程的工作目录。
+
+```js
+console.log(process.cwd()); // C:\Users\sw\Desktop\my\testnode
+```
+
+### process.memoryUsage()
+
+返回一个对象，包含了当前进程的内存使用情况。
+
+```js
+console.log(process.memoryUsage());
+// {
+//   rss: 1175616, // 进程占用的内存总量
+//   heapTotal: 786432, // V8堆的总大小
+//   heapUsed: 651208, // V8堆的使用量
+//   external: 17152 // 外部内存使用量
+//   arrayBuffers: 11264 // 共享ArrayBuffer的使用量
+// }
+```
+
+### process.exit()
+
+退出当前进程。
+
+```js
+process.exit(0); // 退出当前进程
+```
+
+### process.kill()
+
+传入进程号pid来杀死指定进程。
+
+```js
+// 获取当前进程号id
+console.log(process.pid); // 12345
+
+setTimeout(() => {
+  console.log("test");
+}, 3000);
+
+// 杀死进程
+setTimeout(() => {
+  process.kill(process.pid); // 杀死当前进程
+}, 2000);
+```
+
+### process.env()
+
+可以读取系统中的环境变量，当然也可以进行修改和查询环境变量。当然了，这里的修改不是真的直接修改系统中的环境变量，只是读取值后进行修改。而且只在当前线程生效，线程结束便释放。
+
+```js
+process.env.test = "123"; // 设置环境变量
+console.log(process.env.test); // 123
+```
+
+#### 通过环境变量来区分开发环境和生产环境
+
+这里推荐使用 `cross-env` 第三方库来设置环境变量。而且做了不同平台的兼容性处理。其原理就是：`set NODE_ENV=production  #windows` 和 `export NODE_ENV=production #posix`
+
+```shell
+npm install cross-env -D
+```
+
+**如何使用?**
+
+在 package.json 的 scripts 中添加命令进行使用即可。
+
+```json
+scripts: {
+  "dev": "cross-env NODE_ENV=development node index.js",
+  "build": "cross-env NODE_ENV=production node build.js"
+}
+```
+
+然后在代码中通过 `process.env.NODE_ENV` 来获取当前的环境变量，即可判断当前处于开发环境还是生产环境。
+
