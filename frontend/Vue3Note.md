@@ -297,6 +297,14 @@ const stop = watch(count, (newVal, oldVal) => {
 stop();
 ```
 
+如果需要监听类似Store内中数组的变化，可以添加deep选项，这样会监听到数组内的对象变化。
+
+```js
+watch(() => user.ordersList, () => {
+  console.log('user.orderList 值发生变化了')
+}, { deep: true });
+```
+
 ## 10. watchEffect 侦听器
 
 个人感觉不太常用...等用到在仔细研究。
