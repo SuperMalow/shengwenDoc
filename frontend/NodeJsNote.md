@@ -346,7 +346,7 @@ for (const item of network) {
 
 ## 11. Nodejs process 模块
 
-process 是Nodejs操作当前进程和控制当前进程的API。由于process是挂载在globalThis这个全局变量上的，所以可以直接使用。不需要引入模块。
+process 是 Nodejs 操作当前进程和控制当前进程的 API。由于 process 是挂载在 globalThis 这个全局变量上的，所以可以直接使用。不需要引入模块。
 
 ### process.argv
 
@@ -390,7 +390,7 @@ process.exit(0); // 退出当前进程
 
 ### process.kill()
 
-传入进程号pid来杀死指定进程。
+传入进程号 pid 来杀死指定进程。
 
 ```js
 // 获取当前进程号id
@@ -436,3 +436,89 @@ scripts: {
 
 然后在代码中通过 `process.env.NODE_ENV` 来获取当前的环境变量，即可判断当前处于开发环境还是生产环境。
 
+## 12. Nodojs child_process 模块
+
+子进程是 Nodejs 核心 API，接下来将介绍比较常用的 7 个 API。另外，在 Nodejs 中，如果函数中拥有 Sync 后缀则表明该函数是同步的，否则是异步的。
+
+### exec() 和 execSync()
+
+该 API 主要为执行 shell 命令而设计的。会执行一个 shell 命令，并返回一个结果。
+
+```js
+const { exec, execSync } = require("child_process");
+// 同步执行
+exec("node -v", (err, stdout, stderr) => {
+  // console.log(err); // 输出错误
+  console.log("同步执行=>", stdout); // 标准输出 返回的是一个buffer
+  // console.log(stderr); // 标准错误
+});
+// 异步执行
+console.log("异步执行=>", execSync("node -v").toString());
+```
+
+### spawn() 和 spawnSync()
+
+首先 spawn() 相比于 spawnSync()使用的较为多点，因为 spawn()返回的是一个流，可以进行实时监听，另外它返回的是一个完整的 buffer。
+
+```js
+const { spawn, spawnSync } = require("child_process");
+
+const { stdout } = spawn("netstat");
+
+console.log("同步执行 ==> ");
+stdout.on("data", (data) => {
+  console.log(`c: ${data}`); // netstat 边打印 边同步执行
+});
+stdout.on("end", () => {
+  console.log("同步执行 end");
+});
+
+console.log("异步执行 ==> ");
+console.log(spawnSync("netstat").stdout.toString()); // 会等待netstat命令执行完成才打印
+```
+
+### execFile()
+
+该 API 主要为执行可执行文件而设计的。如果是类 unix 则执行对应的 shell 脚本，而 windows 则执行 bat 文件。
+
+```js
+const { execFile } = require("child_process");
+const path = require("path");
+
+console.log(path.resolve(__dirname, "./test.bat"));
+
+execFile(
+  path.resolve(__dirname, "./test.bat"),
+  null,
+  { shell: true },
+  (err, stdout) => {
+    console.log(stdout.toString());
+  }
+);
+```
+
+### fork()
+
+该 API 只能接受 js 模块，不能接受 shell 脚本。由于 NodeJs 是 CPU 密集型的语言,所以对于一些计算比较复杂的操作可以由其子进程来进行计算,然后再将结果返回到父进程即可。
+
+```js
+// child.js
+process.on("message", (msg) => {
+  console.log("子进程 接受到信息啦 ->", msg);
+  process.send("我收到啦!!!");
+});
+```
+
+```js
+const { fork } = require("child_process");
+
+const childProcess = fork("./child.js");
+
+childProcess.send("你好啊，这是父进程");
+
+childProcess.on("message", (msg) => {
+  console.log("父进程 接收到信息 =>", msg);
+});
+```
+
+### exec、execFile、spawn
