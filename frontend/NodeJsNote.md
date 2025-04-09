@@ -646,3 +646,45 @@ for (let i = 0; i < 20; i++) {
 
 event.emit("test", `i=1`);
 ```
+
+## 15. Nodejs fs 模块
+
+Nodejs 的 fs 模块主要用于操作文件系统，包括文件读写、更改权限、目录操作等。
+
+首先fs模块同样支持同步和异步操作，同步操作使用Sync后缀，异步操作使用回调函数。
+
+另外fs模块还新增了promises的支持，可以使用promises来进行异步操作。在fs包后面新增`/promises`即可使用promises版本。
+
+
+### fs.mkdir()
+
+创建目录，如果目录已经存在则会抛出异常。
+
+```js
+const fs = require("fs");
+// recursive 递归创建目录 类似shell中的-r参数
+fs.mkdir("test", { recursive: true }, (err) => {
+  if (err) {
+    console.error(err);
+  } else {
+    console.log("创建目录成功");
+  }
+});
+```
+
+### fs.rmdir()
+
+删除目录，如果目录不存在则会抛出异常。
+
+```js
+const fs = require("fs");
+fs.rmdir("test", (err) => {
+  if (err) {
+    console.error(err);
+  } else {
+    console.log("删除目录成功");
+  }
+});
+```
+
+
