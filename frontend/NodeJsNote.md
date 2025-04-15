@@ -687,4 +687,66 @@ fs.rmdir("test", (err) => {
 });
 ```
 
+### fs.createReadStream()
 
+创建可读流，用于读取文件。
+
+```js
+const fs = require("fs");
+
+const readStream = fs.createReadStream("test.txt", {
+  encoding: "utf8",
+});
+
+readStream.on("data", (chunk) => {
+  console.log(chunk);
+});
+
+readStream.on("end", () => {
+  console.log("文件读取完毕");
+});
+
+readStream.on("error", (err) => {
+  console.error(err);
+});
+```
+
+### fs.createWriteStream()
+
+创建可写流，用于写入文件。
+
+```js
+const fs = require("fs");
+
+const writeStream = fs.createWriteStream("test.txt", {
+  flags: "a", // 追加模式
+  encoding: "utf8",
+});
+
+writeStream.write("hello world\n");
+writeStream.write("你好，世界\n");
+
+writeStream.end();
+
+writeStream.on("finish", () => {
+  console.log("文件写入完毕");
+});
+
+writeStream.on("error", (err) => {
+  console.error(err);
+});
+```
+
+## 16. 防盗链
+
+在进行nodejs搭建的静态服务器时，其暴露出去的资源可能会被小人所盗用，导致服务器的流量变高导致维护成本变大。为了防止这种情况的发生，可以设置防盗链功能。
+
+在Nodejs中，防盗链主要是验证`host`或`referer`两个参数。即判断请求的域名是否与服务器域名一致，或者判断请求的来源是否为服务器域名。
+
+## 17. 跨域CROS
+
+## 18. JWT JSON WEB TOKEN
+
+## 19. 大文件上传
+
+## 20. 文件流下载
