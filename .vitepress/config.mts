@@ -37,7 +37,6 @@ export default defineConfig({
           { text: "Pinia", link: '/frontend/PiniaNote.html' },
           { text: "Electron", link: '/frontend/ElectronNote.html' },
           { text: "VueRouter4", link: '/frontend/VueRouter.html' },
-          { text: "NodeJs", link: '/frontend/NodeJsNote.html' },
         ]
       },
       {
@@ -46,6 +45,7 @@ export default defineConfig({
         items: [
           { text: "Js", link: '/backend/JsNote.html' },
           { text: "NestJs", link: '/backend/NestJsNote.html' },
+          { text: "NodeJs", link: '/frontend/NodeJsNote.html' },
         ]
       },
       {
