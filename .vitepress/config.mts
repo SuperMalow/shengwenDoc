@@ -43,9 +43,27 @@ export default defineConfig({
         text: "Backend",
         collapsed: true,
         items: [
-          { text: "Js", link: '/backend/JsNote.html' },
-          { text: "NestJs", link: '/backend/NestJsNote.html' },
-          { text: "NodeJs", link: '/frontend/NodeJsNote.html' },
+          {
+            text: "Js",
+            collapsed: true,
+            items: [
+              { text: "Js", link: '/backend/JS/JsNote.html' },
+              { text: "NestJs", link: '/backend/JS/NestJsNote.html' },
+              { text: "NodeJs", link: '/backend/JS/NodeJsNote.html' },
+            ]
+          },
+          {
+            text: "Python",
+            collapsed: true,
+            items: [
+              { text: "Django 基本使用", link: '/backend/Python/01-Django入门.html' },
+              { text: "DRF 基本使用", link: '/backend/Python/02-DRF入门.html' },
+              { text: "Asyncio 基本使用", link: '/backend/Python/asyncio基础.html' },
+              { text: "Async Django 基本使用", link: '/backend/Python/asyncDjango.html' },
+              { text: "Async DRF 基本使用", link: '/backend/Python/asyncDRF.html' },
+              { text: "FastAPI基本使用", link: '/backend/Python/fastApi.html' },
+            ]
+          },
         ]
       },
       {
@@ -54,8 +72,17 @@ export default defineConfig({
         items: [
           { text: "Git", link: '/tools/GitNote.html' },
           { text: "Vitepress", link: '/tools/VitepressNote.html' },
+          { text: "Docker 基本使用", link: '/tools/Docker的基本配置.html' },
+          { text: "uv使用教程", link: '/tools/uv使用教程.html' },
+          {
+            text: "Nginx",
+            collapsed: true,
+            items: [
+              { text: "Nginx 基本使用", link: '/tools/NginxNote.html' },
+              { text: "配置ssl证书.md", link: '/tools/配置ssl证书.md.html' },
+            ]
+          },
           { text: "OhterAriticle", link: '/tools/OtherAriticle.html' },
-          { text: "Nginx", link: '/tools/NginxNote.html' }
         ]
       },
       {
@@ -81,6 +108,13 @@ export default defineConfig({
             //   {text: "combat", link: '/algorithm/combat/combat.html'},
             // ]
           },
+        ]
+      },
+      {
+        text: "Project",
+        collapsed: true,
+        items: [
+          { text: "个人直播间", link: '/project/个人直播间项目.html' },
         ]
       }
     ],

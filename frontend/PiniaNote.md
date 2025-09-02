@@ -1,4 +1,3 @@
-
 # Pinia 笔记
 
 ## 0. 简单介绍
@@ -17,7 +16,7 @@ npm install pinia --save
 // main.js
 import { createApp } from "vue";
 import App from "./App.vue";
-import pinia from "./store";
+import { createPinia } from "pinia";
 const store = createPinia();
 const app = createApp(App);
 app.use(store);
