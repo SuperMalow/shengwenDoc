@@ -79,7 +79,7 @@ export default defineConfig({
             collapsed: true,
             items: [
               { text: "Nginx 基本使用", link: '/tools/NginxNote.html' },
-              { text: "配置ssl证书.md", link: '/tools/配置ssl证书.md.html' },
+              { text: "配置ssl证书", link: '/tools/配置ssl证书.html' },
             ]
           },
           { text: "OhterAriticle", link: '/tools/OtherAriticle.html' },
