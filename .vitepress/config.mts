@@ -64,6 +64,13 @@ export default defineConfig({
               { text: "FastAPI基本使用", link: '/backend/Python/fastApi.html' },
             ]
           },
+          {
+            text: "Practical Projects",
+            collapsed: true,
+            items: [
+              { text: "Django RestFramework 自定义用户模型", link: '/backend/Django/DRF自定义用户模型.html' },
+            ]
+          },
         ]
       },
       {
