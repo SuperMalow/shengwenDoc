@@ -69,6 +69,7 @@ export default defineConfig({
             collapsed: true,
             items: [
               { text: "Django RestFramework 自定义用户模型", link: '/backend/Django/DRF自定义用户模型.html' },
+              { text: "Django RestFramework 自定义用户模型", link: '/backend/Django/DRF自定义用户+JWT.html' },
             ]
           },
         ]

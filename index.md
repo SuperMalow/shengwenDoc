@@ -18,7 +18,7 @@ hero:
       link: /frontend/TypescriptNote
     - theme: alt
       text: Back
-      link: /backend/JsNote
+      link: /backend/JS/JsNote
     - theme: alt
       text: Tools
       link: /tools/GitNote
