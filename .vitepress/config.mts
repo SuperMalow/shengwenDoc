@@ -80,8 +80,15 @@ export default defineConfig({
         items: [
           { text: "Git", link: '/tools/GitNote.html' },
           { text: "Vitepress", link: '/tools/VitepressNote.html' },
-          { text: "Docker 基本使用", link: '/tools/Docker的基本配置.html' },
           { text: "uv使用教程", link: '/tools/uv使用教程.html' },
+          {
+            text: "Docker",
+            collapsed: true,
+            items: [
+              { text: "Docker 基本使用", link: '/tools/Docker的基本配置.html' },
+              { text: "Docker项目的统一网关管理", link: '/tools/Docker项目的统一网关管理.html' },
+            ]
+          },
           {
             text: "Nginx",
             collapsed: true,
